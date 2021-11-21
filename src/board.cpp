@@ -77,45 +77,6 @@ unsigned long long makeLegalBoard(unsigned long long board_player,unsigned long 
     return legalBoard;
 }
 
-unsigned long long transfer(unsigned long long id,int dir){
-    if(dir==0){
-        //上
-        return (id << 8) & 0xffffffffffffff00;
-    }else if(dir==1){
-        //右上
-        return (id << 7) & 0x7f7f7f7f7f7f7f00;
-    }else if(dir==2){
-        //右
-        return (id >> 1) & 0x7f7f7f7f7f7f7f7f;
-    }else if(dir==3){
-        //右下
-        return (id >> 9) & 0x007f7f7f7f7f7f7f;
-    }else if(dir==4){
-        //下
-        return (id >> 8) & 0x00ffffffffffffff;
-    }else if(dir==5){
-        //左下
-        return (id >> 7) & 0x00fefefefefefefe;
-    }else if(dir==6){
-        //左
-        return (id << 1) & 0xfefefefefefefefe;
-    }else if(dir==7){
-        //左上
-        return (id << 9) & 0xfefefefefefefe00;
-    }
-    return 0;
-}
-
-int bitcount(unsigned long long data){
-    data=(data&0x5555555555555555)+((data&0xaaaaaaaaaaaaaaaa)>>1);//2桁ごとの1の数
-    data=(data&0x3333333333333333)+((data&0xcccccccccccccccc)>>2);//4桁ごとの1の数
-    data=(data&0xf0f0f0f0f0f0f0f)+((data&0xf0f0f0f0f0f0f0f0)>>4);//8桁ごとの1の数
-    data=(data&0xff00ff00ff00ff)+((data&0xff00ff00ff00ff00)>>8);//16桁ごとの1の数
-    data=(data&0xffff0000ffff)+((data&0xffff0000ffff0000)>>16);//32桁ごとの1の数
-    data=(data&0xffffffff)+((data&0xffffffff00000000)>>32);//64桁の1の数
-    return data;
-}
-
 //指定した座標に何色の石がおいてあるか返す
 int Board::operator [](int i){
     i=63-i;
@@ -208,6 +169,45 @@ void Board::swapBoard(){
     //枚数の更新
     point[0]=bitcount(board_black);
     point[1]=bitcount(board_white);
+}
+
+unsigned long long Board::transfer(unsigned long long id,int dir){
+    if(dir==0){
+        //上
+        return (id << 8) & 0xffffffffffffff00;
+    }else if(dir==1){
+        //右上
+        return (id << 7) & 0x7f7f7f7f7f7f7f00;
+    }else if(dir==2){
+        //右
+        return (id >> 1) & 0x7f7f7f7f7f7f7f7f;
+    }else if(dir==3){
+        //右下
+        return (id >> 9) & 0x007f7f7f7f7f7f7f;
+    }else if(dir==4){
+        //下
+        return (id >> 8) & 0x00ffffffffffffff;
+    }else if(dir==5){
+        //左下
+        return (id >> 7) & 0x00fefefefefefefe;
+    }else if(dir==6){
+        //左
+        return (id << 1) & 0xfefefefefefefefe;
+    }else if(dir==7){
+        //左上
+        return (id << 9) & 0xfefefefefefefe00;
+    }
+    return 0;
+}
+
+int Board::bitcount(unsigned long long data){
+    data=(data&0x5555555555555555)+((data&0xaaaaaaaaaaaaaaaa)>>1);//2桁ごとの1の数
+    data=(data&0x3333333333333333)+((data&0xcccccccccccccccc)>>2);//4桁ごとの1の数
+    data=(data&0xf0f0f0f0f0f0f0f)+((data&0xf0f0f0f0f0f0f0f0)>>4);//8桁ごとの1の数
+    data=(data&0xff00ff00ff00ff)+((data&0xff00ff00ff00ff00)>>8);//16桁ごとの1の数
+    data=(data&0xffff0000ffff)+((data&0xffff0000ffff0000)>>16);//32桁ごとの1の数
+    data=(data&0xffffffff)+((data&0xffffffff00000000)>>32);//64桁の1の数
+    return data;
 }
 
 //盤面の表示
