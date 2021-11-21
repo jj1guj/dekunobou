@@ -24,7 +24,7 @@ a*盤上にしめる自石の割合+辺の形の評価値の合計
 407~487: 斜めの形の評価値(終盤)
 488: a(終盤)
 */
-
+int param_cur[3]={cur_opening,cur_middle,cur_ending};
 //角周辺の形を計算するときに使用
 int shape_ref[12][4]={
     {0,1,2,3},

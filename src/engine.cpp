@@ -1,4 +1,6 @@
 #include "engine.hpp"
+int nodes;
+bool turn_p;
 
 //αβ法による先読み
 //α: 評価値の最小値
@@ -61,7 +63,7 @@ float alphabeta(Board board,float param[param_size],int depth,float alpha,float 
 
 int go(Board board,float param[param_size]){
     turn_p=board.turn;
-    
+
     float val=-inf;
     LegalMoveList moves(board);
     //1手だけのときはその手を返す
