@@ -61,7 +61,8 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
 }
 
 //評価値の計算(手番側が有利ならプラス)
-float eval(Board board,float param[param_size],int cur_offset){
+float eval(Board board,float param[param_size]){
+    int cur_offset=param_cur[board.ply/20];
     float ans=12.0*board.point[!board.turn]/(board.point[0]+board.point[1]);
     ans*=param[cur_offset+81];
     ans+=calc_shape_value(board,param,cur_offset);
