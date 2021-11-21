@@ -37,3 +37,6 @@ class Board{
 
     int bitcount(unsigned long long data);
 };
+
+void disp(Board board);
+void disp_teban(Board board);

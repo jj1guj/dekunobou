@@ -1,4 +1,7 @@
 #include "board.hpp"
+#include"legalmovelist.hpp"
+#include<iostream>
+
 unsigned long long makeLegalBoard(unsigned long long board_player,unsigned long long board_opponent){
     //左右端の番人
     unsigned long long horizontalWatcher=board_opponent&0x7e7e7e7e7e7e7e7e;
@@ -205,4 +208,46 @@ void Board::swapBoard(){
     //枚数の更新
     point[0]=bitcount(board_black);
     point[1]=bitcount(board_white);
+}
+
+//盤面の表示
+void disp(Board board){
+    for(int i=0;i<8;++i){
+        for(int j=0;j<8;++j){
+            int id=63-(8*i+j);
+            if((board.board_black>>id)&1){
+                std::cout<<"o ";
+            }else if((board.board_white>>id)&1){
+                std::cout<<"x ";
+            }else{
+                std::cout<<". ";
+            }
+        }
+        std::cout<<std::endl;
+    }
+    std::cout<<std::endl;
+}
+
+//盤面の表示(合法手表示含む)
+void disp_teban(Board board){
+    LegalMoveList moves(board);
+    int cur=0;
+    for(int i=0;i<8;++i){
+        for(int j=0;j<8;++j){
+            int id=63-(8*i+j);
+            if((board.board_black>>id)&1){
+                std::cout<<"o ";
+            }else if((board.board_white>>id)&1){
+                std::cout<<"x ";
+            }else if(moves[cur]==8*i+j && cur<moves.size()){
+                ++cur;
+                std::cout<<cur;
+                if(cur<10)std::cout<<" ";
+            }else{
+                std::cout<<". ";
+            }
+        }
+        std::cout<<std::endl;
+    }
+    std::cout<<std::endl;
 }
