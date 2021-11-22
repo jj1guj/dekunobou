@@ -33,3 +33,8 @@
 
 .vscode/**
 build*/**
+*.cpp
+*.hpp
+*.c
+*.h
+*.cc
