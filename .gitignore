@@ -33,3 +33,6 @@
 
 .vscode/**
 build*/**
+
+*.png
+*.mp4
