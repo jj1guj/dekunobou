@@ -1,17 +1,19 @@
-#include<iostream>
 #include<algorithm>
-#include<random>
-#include<string>
-#include<vector>
+#include<chrono>
+#include<cstring>
 #include<fstream>
+#include<iostream>
 #include<istream>
 #include<omp.h>
+#include<random>
 #include<sstream>
+#include<string>
+#include<vector>
 
 #pragma once
 //モード指定
-#define Debug //デバッグモード
-#define Console //コンソールモードでの対局(default)
+//#define Debug //デバッグモード
+//#define Console //コンソールモードでの対局(default)
 #define GA //遺伝的アルゴリズムによる評価関数生成
 //#define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
 

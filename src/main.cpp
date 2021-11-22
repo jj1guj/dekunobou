@@ -1,4 +1,4 @@
-#include"play.hpp"
+#include"ga.hpp"
 
 float param[param_size];
 
@@ -28,6 +28,7 @@ int main(int argc,char** argv){
 #elif defined GA
     int threads=0;
     if(argc>1)threads=atoi(argv[1]);
+    ga(threads);
 #elif defined API
     play_with_human();
 #endif
