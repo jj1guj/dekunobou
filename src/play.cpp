@@ -100,8 +100,9 @@ int play_engine(float param_black[param_size],float param_white[param_size]){
             continue;
         }
         pass_count=0;
-
+#if defined Debug
         disp_teban(board);
+#endif
         if(board.turn){
             //後手番
             move=go(board,param_white);
