@@ -1,7 +1,7 @@
 # dekunobou
  Othello AI using GA
 
-# Enviroments
+# Environments
 - Linux  
 Caution: This program is not confirmed on Windows.
 If your OS is Windows, please use WSL.
