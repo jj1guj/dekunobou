@@ -75,7 +75,7 @@ cd dekunobou-web/api
 cp [path-to-build]/dekunobou .
 ```
 
-4. Edit `scripts/mainb.js` line 220 like this
+4. Edit `scripts/main.js` line 220 like this
 ```javascript
 220 const url="http://localhost:5000/put"
 ```
