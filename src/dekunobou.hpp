@@ -19,8 +19,12 @@
 
 #define perfect_search 11 //完全読みを始めるタイミング
 #define param_size 489
+// #define param_size 84
 #define inf 1000000000
 
 #define cur_opening 0
 #define cur_middle 163
 #define cur_ending 326
+// #define cur_opening 81
+// #define cur_middle 82
+// #define cur_ending 83

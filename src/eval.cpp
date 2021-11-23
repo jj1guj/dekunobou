@@ -50,9 +50,9 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
     for(int i=0;i<12;++i){
         ref1=shape_ref[i][0];ref2=shape_ref[i][1];ref3=shape_ref[i][2];ref4=shape_ref[i][3];
         index=(board[ref1]+3)%3;
-        index+=3*(board[ref2]+3)%3;
-        index+=9*(board[ref3]+3)%3;
-        index+=27*(board[ref4]+3)%3;
+        index+=3*((board[ref2]+3)%3);
+        index+=9*((board[ref3]+3)%3);
+        index+=27*((board[ref4]+3)%3);
         val+=param[index+cur_offset];
     }
     //後手番のときは符号を反転
