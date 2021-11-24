@@ -2,7 +2,7 @@
   "param_dir": "../build/data", #生成した遺伝子が保存されているパス
   "move_h": 480,
   "move_w": 640,
-  "aspect": 0.4, #ヒートマップのアスペクト比
+  "aspect": 0.1, #ヒートマップのアスペクト比
   "img_dir": "out", #画像の保存先
   "mov_dir": "mov", #動画の保存先
 }
