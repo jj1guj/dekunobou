@@ -53,7 +53,9 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
         index+=3*((board[ref2]+3)%3);
         index+=9*((board[ref3]+3)%3);
         index+=27*((board[ref4]+3)%3);
-        val+=param[index+cur_offset];
+        // val+=param[index+cur_offset];
+        if(i<=7)val+=param[index];
+        else val+=param[index+81];
     }
     //後手番のときは符号を反転
     if(!board.turn)val*=-1.0;
@@ -64,7 +66,8 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
 float eval(Board board,float param[param_size]){
     int cur_offset=param_cur[board.ply/20];
     float ans=12.0*board.point[!board.turn]/(board.point[0]+board.point[1]);
-    ans*=param[cur_offset+81];
+    // ans*=param[cur_offset+81];
+    ans*=param[cur_offset];
     ans+=calc_shape_value(board,param,cur_offset);
     return ans;
 }
