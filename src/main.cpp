@@ -1,10 +1,13 @@
 #include"dekunobou.hpp"
 #if defined GA
     #include"ga.hpp"
-#elif defined API
-    #include"eval_param.hpp"
 #else
     #include"play.hpp"
+#endif
+
+#if defined API
+    #include"eval_param.hpp"
+#elif defined Console
     float param[param_size];
 #endif
 
