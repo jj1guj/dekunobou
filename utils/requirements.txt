@@ -4,3 +4,4 @@ numpy
 tqdm
 pyyaml
 subprocess
+tqdm
