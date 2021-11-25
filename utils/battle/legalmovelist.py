@@ -1,4 +1,3 @@
-from board import *
 class LegalMoveList:
     def __init__(self,board):
         self.movelist=[]

@@ -120,3 +120,7 @@ class Board:
                     out+="x"
             out+="\n"
         return out
+    
+    def __str__(self):
+        out=[(self.board[i//8][i%8]+3)%3 for i in range(64)]
+        return "".join(map(str,out))
