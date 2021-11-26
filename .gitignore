@@ -37,3 +37,4 @@ build*/**
 *.png
 *.mp4
 *.pyc
+*.txt
