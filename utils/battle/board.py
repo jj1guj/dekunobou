@@ -1,7 +1,9 @@
+import re
 # https://github.com/jj1guj/dekunobou-genetic/blob/master/othello.hpp をPython用に書き直した
 # src/board.hpp, src/legalmovelist.hpp をPython向けにwrapperできたらそっちに置き換える予定
 class Board:
-    def __init__(self):
+    # kif: 途中までの進行の文字列. フォーマットは公式の棋譜に準拠
+    def __init__(self,kif=None):
         self.board=[[0 for i in range(8)] for j in range(8)]
         self.board[3][3]=-1
         self.board[3][4]=1
@@ -10,6 +12,25 @@ class Board:
         self.point=[2,2]
         self.stone=[1,-1]
         self.turn=False
+
+        if kif is not None:
+            K=re.split('(..)',kif)[1::2]
+            A={
+                "a":0,
+                "b":1,
+                "c":2,
+                "d":3,
+                "e":4,
+                "f":5,
+                "g":6,
+                "h":7,
+            }
+            for k in K:
+                m=8*A[k[0]]+int(k[1])-1
+                ref=self.push(m)
+                if ref<0:
+                    self.push(64)
+                    self.push(m)
 
     def push(self,move):
         di=[0,0,-1,1,-1,1,-1,1]
