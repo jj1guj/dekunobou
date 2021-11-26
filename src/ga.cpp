@@ -14,7 +14,7 @@ int thresh=0.55*match_genetic;//勝数がこの値を超えたら親を子で置
 float alpha=1e-2;//突然変異の確率
 int result[3];//対戦結果を格納する
 int win_impossible[1000];//i戦目時点で勝率0.55達成不可能ライン
-double timelimit=11*3600;//遺伝的アルゴリズムを行う時間. 秒で指定
+double timelimit=36*3600;//遺伝的アルゴリズムを行う時間. 秒で指定
 
 //交叉関連(並列化)
 bool cur_used[N];//現在の世代で交叉中かどうか判定するフラグ
