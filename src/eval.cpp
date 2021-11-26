@@ -14,15 +14,13 @@ a*盤上にしめる自石の割合+辺の形の評価値の合計
 例
 石の配置: *ox
 1*2+3*1+9*0=5
-0~80: 辺の形の評価値(序盤)
-81~161: 斜めの形の評価値(序盤)
-162: a(序盤)
-163~243: 辺の形の評価値(中盤)
-244~324: 斜めの形の評価値(中盤)
+0~80: 辺の形の評価値(先手)
+81~161: 斜めの形の評価値(先手)
+162~242: 辺の形の評価値(後手)
+243~323: 斜めの形の評価値(後手)
+324: a(序盤)
 325: a(中盤)
-326~406: 辺の形の評価値(終盤)
-407~487: 斜めの形の評価値(終盤)
-488: a(終盤)
+326: a(終盤)
 */
 int param_cur[3]={cur_opening,cur_middle,cur_ending};
 //角周辺の形を計算するときに使用
@@ -53,12 +51,9 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
         index+=3*((board[ref2]+3)%3);
         index+=9*((board[ref3]+3)%3);
         index+=27*((board[ref4]+3)%3);
-        // val+=param[index+cur_offset];
-        if(i<=7)val+=param[index];
-        else val+=param[index+81];
+        if(i<=7)val+=param[index+162*!board.turn];
+        else val+=param[index+81+162*!board.turn];
     }
-    //後手番のときは符号を反転
-    if(!board.turn)val*=-1.0;
     return val;
 }
 
@@ -66,7 +61,6 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
 float eval(Board board,float param[param_size]){
     int cur_offset=param_cur[board.ply/20];
     float ans=12.0*board.point[!board.turn]/(board.point[0]+board.point[1]);
-    // ans*=param[cur_offset+81];
     ans*=param[cur_offset];
     ans+=calc_shape_value(board,param,cur_offset);
     return ans;
