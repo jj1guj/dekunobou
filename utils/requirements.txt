@@ -3,5 +3,3 @@ matplotlib
 numpy
 tqdm
 pyyaml
-subprocess
-tqdm
