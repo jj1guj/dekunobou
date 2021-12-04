@@ -58,7 +58,7 @@ float calc_shape_value(Board& board,float param[param_size],int cur_offset){
         else val+=param[index+81];
     }
     //後手番のときは符号を反転
-    if(!board.turn)val*=-1.0;
+    if(board.turn)val*=-1.0;
     return val;
 }
 
