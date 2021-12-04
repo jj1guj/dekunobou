@@ -3,7 +3,7 @@
 class LegalMoveList{
     public:
     LegalMoveList(){}
-    LegalMoveList(Board board){
+    LegalMoveList(Board& board){
         unsigned long long legalBoard=makeLegalBoard(board.board_player,board.board_opponent);
         move_num=0;
         unsigned long long id;
