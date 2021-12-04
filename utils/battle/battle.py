@@ -64,6 +64,8 @@ if __name__=="__main__":
             #先後入れ替えて対局するため対局回数の半分になっている
             L=random.sample(L,config["match_times"]//2)
 
+    print("engine1:",config["engine1"])
+    print("engine2:",config["engine2"])
     for i in tqdm.tqdm(range(config["match_times"]//2)):
         if L is not None:
             r1=match(config["engine1"],config["engine2"],L[i])
