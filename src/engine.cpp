@@ -32,11 +32,11 @@ float alphabeta(Board board,float param[param_size],int depth,float alpha,float 
             board_ref=board;
             board_ref.push(moves[i]);
             if(board.turn==turn_p){
-                val=std::max(val,eval(board,param));
+                val=std::max(val,eval(board_ref,param));
                 if(val>=beta)break;
                 alpha=std::max(alpha,val);
             }else{
-                val=std::min(val,eval(board,param));
+                val=std::min(val,eval(board_ref,param));
                 if(val<=alpha)break;
                 beta=std::min(beta,val);
             }
