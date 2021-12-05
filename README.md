@@ -89,7 +89,7 @@ pip3 install -r requirements.txt
 python3 app.py
 ```
 
-# Bug report and etc.
+# バグ報告など
 バグ等ありましたらissueまでよろしくおねがいします.
 
 # dekunobou
