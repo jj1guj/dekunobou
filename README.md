@@ -1,6 +1,6 @@
 # でくのぼう
  遺伝的アルゴリズムを使用したオセロAI
- (English version is below.)
+ (English version is [below](https://github.com/jj1guj/dekunobou/blob/main/README.md#dekunobou))
 
 # 動作環境
 - Linux
