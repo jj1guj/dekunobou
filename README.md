@@ -1,6 +1,6 @@
 # でくのぼう
  遺伝的アルゴリズムを使用したオセロAI
- (English version is below.)
+ (English version is [below](https://github.com/jj1guj/dekunobou/blob/main/README.md#dekunobou))
 
 # 動作環境
 - Linux
@@ -89,7 +89,7 @@ pip3 install -r requirements.txt
 python3 app.py
 ```
 
-# Bug report and etc.
+# バグ報告など
 バグ等ありましたらissueまでよろしくおねがいします.
 
 # dekunobou
