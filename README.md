@@ -3,7 +3,7 @@
  (English version is [below](https://github.com/jj1guj/dekunobou/blob/main/README.md#dekunobou))
 
 # 動作環境
-- Linux
+- Linux  
 注意!: このプログラムはWindowsでの動作を確認していません.  
 もしOSがWindowsでしたらWSLの使用を推奨します.
 
