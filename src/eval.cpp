@@ -20,31 +20,33 @@ a*盤上にしめる自石の割合+辺の形の評価値の合計
 13123: a(中盤)
 13124: a(終盤)
 */
-int param_cur[3]={cur_opening,cur_middle,cur_ending};
+constexpr int param_cur[3] = {cur_opening, cur_middle, cur_ending};
 //角周辺の形を計算するときに使用
-int shape_ref[6][8]={
-    {0,1,2,3,4,5,6,7},
-    {0,8,16,24,32,40,48,56},
-    {7,15,23,31,39,47,55,63},
-    {56,57,58,59,60,61,62,63},
-    {0,9,18,27,36,45,54,63},//斜め
-    {7,14,21,28,35,42,49,56},//斜め
+constexpr int shape_ref[6][8] = {
+    {0, 1, 2, 3, 4, 5, 6, 7},
+    {0, 8, 16, 24, 32, 40, 48, 56},
+    {7, 15, 23, 31, 39, 47, 55, 63},
+    {56, 57, 58, 59, 60, 61, 62, 63},
+    {0, 9, 18, 27, 36, 45, 54, 63},  //斜め
+    {7, 14, 21, 28, 35, 42, 49, 56}, //斜め
 };
 
-int pow3[8]={1,3,9,27,81,243,729,2187};
+constexpr int pow3[8]={1,3,9,27,81,243,729,2187};
+constexpr int pow3_reverse[8] = {2187,729,243,81,27,9,3,1};
 
 //角付近の形を評価する
 float calc_shape_value(Board& board,float param[param_size],int cur_offset){
     float val=0;
     int index,index_1,index_2;
-    int ref1,ref2,ref3,ref4,ref;
+    int ref,ref_value;
     //角付近の形
     for(int i=0;i<6;++i){
         index_1=0;index_2=0;
         for(int j=0;j<8;++j){
             ref=shape_ref[i][j];
-            index_1+=pow3[j]*((board[ref]+3)%3);
-            index_2+=pow3[7-j]*((board[ref]+3)%3);
+            ref_value=(board[ref]+3)%3;
+            index_1+=pow3[j]*ref_value;
+            index_2 += pow3_reverse[j] * ref_value;
         }
         index=std::min(index_1,index_2);
 
