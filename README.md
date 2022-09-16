@@ -29,6 +29,7 @@ make
 
 3. 以下のコマンドを実行する
 ```bash
+ulimit -s unlimited
 ./dekunobou [スレッド数]
 ```
 
@@ -50,6 +51,7 @@ make
 
 3. 以下のコマンドを実行する
 ```bash
+ulimit -s unlimited
 ./dekunobou
 ```
 あとは表示されたメッセージに従って遊んでください.
@@ -122,6 +124,7 @@ make
 
 3. Run this command
 ```bash
+ulimit -s unlimited
 ./dekunobou [number of threads]
 ```
 
@@ -143,6 +146,7 @@ make
 
 3. Run this command
 ```bash
+ulimit -s unlimited
 ./dekunobou
 ```
 
