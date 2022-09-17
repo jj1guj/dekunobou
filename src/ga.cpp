@@ -104,8 +104,8 @@ void intersection(float p1[param_size],float p2[param_size],int cur1,int cur2){
 
             if((float)rnd()/0xffffffff<=alpha){
                 c=2.0*(float)rnd()/0xffffffff-1.0;
-                while(c==c1[i])c=2.0*(float)rnd()/0xffffffff-1.0;
-                c1[i]=c;
+                while(c==c2[i])c=2.0*(float)rnd()/0xffffffff-1.0;
+                c2[i]=c;
             }
         }
 
