@@ -15,7 +15,6 @@ float alpha=1e-2;//突然変異の確率
 int result[3];//対戦結果を格納する
 int win_impossible[1000];//i戦目時点で勝率0.55達成不可能ライン
 double timelimit=36*3600;//遺伝的アルゴリズムを行う時間. 秒で指定
-
 //交叉関連(並列化)
 bool cur_used[N];//現在の世代で交叉中かどうか判定するフラグ
 
@@ -28,10 +27,45 @@ std::string eval_output_path="eval.txt";//最終的に出力する評価関数�
 std::string data_path="data";//遺伝子すべてを保存するディレクトリのパス
 int out_interval=10;//遺伝子すべてを出力する間隔
 
+int R3[param_size];//3進法表記で反転させた値を10進法表記で格納する
+constexpr int pow3[8]={1,3,9,27,81,243,729,2187};
+constexpr int pow3_reverse[8] = {2187,729,243,81,27,9,3,1};
+void make_R3(int cur,int L[8]){
+    if(cur==8){
+        int index1=0,index2=0;
+        for(int i=0;i<8;++i){
+            index1+=pow3[i]*L[i];
+            index2+=pow3_reverse[i]*L[i];
+        }
+        R3[index1]=index2;
+        R3[index2]=index1;
+        return;
+    }
+
+    for(int i=0;i<3;++i){
+        L[cur]=i;
+        make_R3(cur+1,L);
+    }
+}
+void init_R3(){
+    int r3[8];
+    make_R3(0,r3);
+    int pow3_8=pow(3,8);
+    for(int i=pow3_8;i<cur_opening;++i){
+        R3[i]=R3[i-pow3_8]+pow3_8;
+    }
+    R3[cur_opening]=cur_opening;
+    R3[cur_middle]=cur_middle;
+    R3[cur_ending]=cur_ending;
+}
+
 std::random_device rnd;
 void init_param(float params[param_size]){
     for(int i=0;i<param_size;++i){
-        params[i]=2.0*(float)rnd()/0xffffffff-1.0;
+        if(i<=R3[i]){
+            params[i]=2.0*(float)rnd()/0xffffffff-1.0;
+            params[R3[i]]=params[i];
+        }
     }
 }
 
@@ -74,9 +108,13 @@ void intersection(float p1[param_size],float p2[param_size],int cur1,int cur2){
     //c1: 子1(p1ベースでp2と交叉した後のもの)
     //c2: 子2(p2ベースでp1と交叉した後のもの)
     float c,c1[param_size],c2[param_size];
+    std::set<int> intersected,changed_c1,changed_c2;
 
     //M回交叉する
     for(int m=0;m<M;++m){
+        intersected.clear();
+        changed_c1.clear();
+        changed_c2.clear();
         //swapする区間を設定する
         //lからrの区間だけswapする
         //l<rが保証されている
@@ -88,24 +126,45 @@ void intersection(float p1[param_size],float p2[param_size],int cur1,int cur2){
         //lからrの区間をswapする
         for(int i=0;i<param_size;++i){
             if(l<=i && i<=r){
-                c1[i]=p2[i];
-                c2[i]=p1[i];
-            }else{
-                c1[i]=p1[i];
-                c2[i]=p2[i];
+                if(intersected.find(i)==intersected.end()){
+                    c1[i]=p2[i];
+                    c2[i]=p1[i];
+                    intersected.insert(i);
+                    if(i!=R3[i]){
+                        c1[R3[i]]=p2[R3[i]];
+                        c2[R3[i]]=p1[R3[i]];
+                        intersected.insert(R3[i]);
+                    }
+                }
+            }else if(intersected.find(i)==intersected.end()){
+                if(changed_c1.find(i)==changed_c1.end()){
+                    c1[i]=p1[i];
+                }
+
+                if(changed_c2.find(i)==changed_c2.end()){
+                    c2[i]=p2[i];
+                }
             }
 
             //確率に応じて突然変異を行う
-            if((float)rnd()/0xffffffff<=alpha){
-                c=2.0*(float)rnd()/0xffffffff-1.0;
-                while(c==c1[i])c=2.0*(float)rnd()/0xffffffff-1.0;
-                c1[i]=c;
-            }
+            if(i<=R3[i]){
+                if((float)rnd()/0xffffffff<=alpha){
+                    c=2.0*(float)rnd()/0xffffffff-1.0;
+                    while(c==c1[i])c=2.0*(float)rnd()/0xffffffff-1.0;
+                    c1[i]=c;
+                    c1[R3[i]]=c1[i];
+                    changed_c1.insert(i);
+                    changed_c1.insert(R3[i]);
+                }
 
-            if((float)rnd()/0xffffffff<=alpha){
-                c=2.0*(float)rnd()/0xffffffff-1.0;
-                while(c==c2[i])c=2.0*(float)rnd()/0xffffffff-1.0;
-                c2[i]=c;
+                if((float)rnd()/0xffffffff<=alpha){
+                    c=2.0*(float)rnd()/0xffffffff-1.0;
+                    while(c==c2[i])c=2.0*(float)rnd()/0xffffffff-1.0;
+                    c2[i]=c;
+                    c2[R3[i]]=c2[i];
+                    changed_c2.insert(i);
+                    changed_c2.insert(R3[i]);
+                }
             }
         }
 
@@ -138,6 +197,7 @@ void intersection(float p1[param_size],float p2[param_size],int cur1,int cur2){
 
 void ga(int threads_num){
     //変数の初期化
+    init_R3();
     match_genetic/=2;//先後入れ替えて対局するので2で割る
     timelimit*=1000.0;//msecに変換
     match_times/=2;//先後両方行うので2で割る
@@ -208,6 +268,15 @@ void ga(int threads_num){
 
     //1番最後の遺伝子をファイルに出力
     out_params(data_path+"/out_"+std::to_string(itr)+".csv");
+
+    // params[i][j]とparams[i][R3[j]]で値が等しいかテスト
+    bool different_flg=false;
+    for(int i=0;i<N;++i)for(int j=0;j<param_size;++j){
+        if(params[i][j]!=params[i][R3[j]]){
+            different_flg=true;
+            std::cout<<i<<": "<<j<<","<<R3[j]<<" "<<params[i][j]<<" "<<params[i][R3[j]]<<std::endl;
+        }
+    }
 
     //総当たり戦を行い最終的に最も借り星の多いパラメータを出力
     int winner;
