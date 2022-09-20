@@ -69,34 +69,34 @@ void init_param(float params[param_size]){
     }
 }
 
-//遺伝的アルゴリズムで使用したパラメータすべてをCSVファイルから読み込む
+//遺伝的アルゴリズムで使用したパラメータすべてをバイナリファイルから読み込む
 int load_params(std::string filename,float params[N][param_size]){
-    std::ifstream inputs(filename);
+    std::ifstream inputs(filename,std::ios::in|std::ios::binary);
     std::string s;
     int i=0,j;
     if(inputs.fail()){
         std::cout<<"Failed to open file\n";
         return -1;
     }
-    while(getline(inputs,s)){
-        std::stringstream ss{s};
-        std::string buf;
-        j=0;
-        while(std::getline(ss,buf,',')){
-            params[i][j]=std::stof(buf);
-            ++j;
-        }
-        ++i;
+
+    int cur=0;
+    float p;
+    while(!inputs.eof()){
+        inputs.read((char*)&p,sizeof(float));
+        params[cur/param_size][cur%param_size]=p;
+        ++cur;
+        if(cur==N*param_size)break;
     }
     return 0;
 }
 
-//遺伝的アルゴリズムで生成したパラメータをすべてCSVファイルに格納する
+//遺伝的アルゴリズムで生成したパラメータをすべてバイナリファイルに格納する
 void out_params(std::string path){
-    std::ofstream output(path);
+    std::ofstream output(path,std::ios::out|std::ios::binary|std::ios::trunc);
     for(int i=0;i<N;++i){
-        for(int j=0;j<param_size;++j)output<<params[i][j]<<",";
-        output<<std::endl;
+        for(int j=0;j<param_size;++j){
+            output.write((char*)&params[i][j],sizeof(float));
+        }
     }
     output.close();
 }
@@ -221,7 +221,7 @@ void ga(int threads_num){
     for(int i=0;i<N;++i)cur_used[i]=false;
 
     //最初の重みを出力
-    out_params(data_path+"/out_1.csv");
+    out_params(data_path+"/out_1.bin");
 
     //時間計測を開始
     std::chrono::system_clock::time_point start,end;
@@ -254,7 +254,7 @@ void ga(int threads_num){
 
         //今の遺伝子をファイルに出力
         if(itr%out_interval==0){
-            out_params(data_path+"/out_"+std::to_string(itr)+".csv");
+            out_params(data_path+"/out_"+std::to_string(itr)+".bin");
         }
 
         //10世代ごとに時間を計測し制限時間内か見る
@@ -267,7 +267,7 @@ void ga(int threads_num){
     }
 
     //1番最後の遺伝子をファイルに出力
-    out_params(data_path+"/out_"+std::to_string(itr)+".csv");
+    out_params(data_path+"/out_"+std::to_string(itr)+".bin");
 
     // params[i][j]とparams[i][R3[j]]で値が等しいかテスト
     bool different_flg=false;

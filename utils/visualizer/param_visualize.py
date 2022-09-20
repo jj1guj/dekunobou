@@ -7,6 +7,7 @@ matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import numpy as np
 import os
+import struct
 import tqdm
 import yaml
 
@@ -15,8 +16,11 @@ with open("config.yaml") as f:
 
 file_path=config["param_dir"]
 file_list=os.listdir(file_path)
-file_list=[i for i in file_list if ".csv" in i]
+file_list=[i for i in file_list if ".bin" in i]
 file_num=len(os.listdir(file_path))
+
+param_size=int(config["param_size"])
+gene_num=int(config["gene_num"])
 
 #写真保存用のパスが存在するか確認してないようなら作成する
 if not os.path.exists(config["img_dir"]):
@@ -42,12 +46,14 @@ print(L)
 plt.figure()
 for j in tqdm.tqdm(range(len(L))):
     i=L[j]
-    filename=os.path.join(file_path,"out_{}.csv".format(i))
-    with open(filename) as f:
-        data=f.readlines()
-    data=[i.replace("\n","") for i in data]
-    data=[i.split(",")[:-1] for i in data]
-    data=[[float(j) for j in i] for i in data]
+    filename=os.path.join(file_path,"out_{}.bin".format(i))
+    
+
+    # バイナリデータの読み込み
+    with open(filename,"rb") as f:
+        rawdata=f.read()
+    
+    data=[[struct.unpack_from("f",rawdata,4*(param_size*i+j))[0] for j in range(param_size)] for i in range(gene_num)]
     data=np.array(data)
 
     #ヒートマップの描画
