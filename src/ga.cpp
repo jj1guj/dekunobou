@@ -147,25 +147,25 @@ void intersection(float p1[param_size],float p2[param_size],int cur1,int cur2){
             }
 
             //確率に応じて突然変異を行う
-            if(i<=R3[i]){
-                if((float)rnd()/0xffffffff<=alpha){
-                    c=2.0*(float)rnd()/0xffffffff-1.0;
-                    while(c==c1[i])c=2.0*(float)rnd()/0xffffffff-1.0;
-                    c1[i]=c;
-                    c1[R3[i]]=c1[i];
-                    changed_c1.insert(i);
-                    changed_c1.insert(R3[i]);
-                }
+            // if(i<=R3[i]){
+            //     if((float)rnd()/0xffffffff<=alpha){
+            //         c=2.0*(float)rnd()/0xffffffff-1.0;
+            //         while(c==c1[i])c=2.0*(float)rnd()/0xffffffff-1.0;
+            //         c1[i]=c;
+            //         c1[R3[i]]=c1[i];
+            //         changed_c1.insert(i);
+            //         changed_c1.insert(R3[i]);
+            //     }
 
-                if((float)rnd()/0xffffffff<=alpha){
-                    c=2.0*(float)rnd()/0xffffffff-1.0;
-                    while(c==c2[i])c=2.0*(float)rnd()/0xffffffff-1.0;
-                    c2[i]=c;
-                    c2[R3[i]]=c2[i];
-                    changed_c2.insert(i);
-                    changed_c2.insert(R3[i]);
-                }
-            }
+            //     if((float)rnd()/0xffffffff<=alpha){
+            //         c=2.0*(float)rnd()/0xffffffff-1.0;
+            //         while(c==c2[i])c=2.0*(float)rnd()/0xffffffff-1.0;
+            //         c2[i]=c;
+            //         c2[R3[i]]=c2[i];
+            //         changed_c2.insert(i);
+            //         changed_c2.insert(R3[i]);
+            //     }
+            // }
         }
 
         //子と親で対戦する
