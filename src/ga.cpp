@@ -11,7 +11,7 @@ float param_white[param_size];
 int M=100;//1世代での交叉回数
 int match_genetic=30;//交叉時の親と子の対局数
 int thresh=0.55*match_genetic;//勝数がこの値を超えたら親を子で置き換える
-float alpha=1e-2;//突然変異の確率
+float alpha=1e-3;//突然変異の確率
 int result[3];//対戦結果を格納する
 int win_impossible[1000];//i戦目時点で勝率0.55達成不可能ライン
 double timelimit=36*3600;//遺伝的アルゴリズムを行う時間. 秒で指定
