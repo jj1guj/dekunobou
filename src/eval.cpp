@@ -32,7 +32,6 @@ constexpr int shape_ref[6][8] = {
 };
 
 constexpr int pow3[8]={1,3,9,27,81,243,729,2187};
-constexpr int pow3_reverse[8] = {2187,729,243,81,27,9,3,1};
 
 //角付近の形を評価する
 float calc_shape_value(Board& board,float param[param_size],int cur_offset){
