@@ -164,7 +164,7 @@ int go(Board board,float param[param_size]){
         //終盤20手で完全読み
         nodes=0;
         if(board.point[0]+board.point[1]>=60-perfect_search)eval_ref=alphabeta(board_ref,param,60,-inf,inf);
-        // else eval_ref=alphabeta(board_ref,param,7,val,inf);
+        // else eval_ref=alphabeta(board_ref,param,6,val,inf);
         else{
             eval_ref=-nega_alpha(board_ref,param,8,false,-beta,-alpha);
             if(alpha<eval_ref){
