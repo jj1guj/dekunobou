@@ -44,23 +44,18 @@ constexpr int pow3_reverse[8] = {2187,729,243,81,27,9,3,1};
 float calc_shape_value(Board& board,float param[param_size],int cur_offset){
     float val=0;
     int index;
-    int ref1, ref2, ref3, ref4;
+    int ref,ref_value;
     //角付近の形
-    for (int i = 0; i < 12; ++i)
-    {
-        ref1 = shape_ref[i][0];
-        ref2 = shape_ref[i][1];
-        ref3 = shape_ref[i][2];
-        ref4 = shape_ref[i][3];
-        index = (board[ref1] + 3) % 3;
-        index += 3 * ((board[ref2] + 3) % 3);
-        index += 9 * ((board[ref3] + 3) % 3);
-        index += 27 * ((board[ref4] + 3) % 3);
-        // val+=param[index+cur_offset];
-        if (i <= 7)
-            val += param[index];
-        else
-            val += param[index + 81];
+    for(int i=0;i<6;++i){
+        index=0;
+        for(int j=0;j<8;++j){
+            ref=shape_ref[i][j];
+            ref_value=(board[ref]+3)%3;
+            index+=pow3[j]*ref_value;
+        }
+        
+        if(i<=3)val+=param[index];
+        else val+=param[index+6561];
     }
     //後手番のときは符号を反転
     if(board.turn)val*=-1.0;

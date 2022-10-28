@@ -1,4 +1,6 @@
 #include "play.hpp"
+#include<set>
+#include<cmath>
 #if defined GA
 #pragma once
 #define N 1024
