@@ -47,6 +47,11 @@ plt.figure()
 for j in tqdm.tqdm(range(len(L))):
     i=L[j]
     filename=os.path.join(file_path,"out_{}.bin".format(i))
+    if os.path.exists(os.path.join(config["img_dir"],"out_{}.png".format(i))):
+        #動画への出力
+        img=cv2.imread(os.path.join(config["img_dir"],"out_{}.png".format(i)))
+        video.write(img)
+        continue
     
 
     # バイナリデータの読み込み
