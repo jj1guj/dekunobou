@@ -4,35 +4,21 @@ long long nodes_total=0;
 bool turn_p;
 
 void move_ordering(LegalMoveList& moves,Board board,float param[param_size]){
-    float evals[64];
-    int priority[64];
-    bool selected[64];
-    std::vector<float>evals_sort(moves.size());
+    // 各要素を{評価値, 候補手}としておき, 評価値と候補手を紐づけることで二重ループを回避する
+    std::vector<std::pair<float,int>>evals(moves.size());
     Board board_ref;
 
     // 1手読みの評価値を算出
     for(int i=0;i<moves.size();++i){
         board_ref=board;
         board_ref.push(moves[i]);
-        evals[i]=-eval(board_ref,param);
-        evals_sort[i]=evals[i];
-        selected[i]=false;
+        evals[i]={-eval(board_ref,param),moves[i]};
     }
 
     // 評価値の降順にソート
-    std::sort(evals_sort.begin(),evals_sort.end(),std::greater<float>());
+    std::sort(evals.begin(),evals.end(),std::greater<std::pair<float,int>>());
 
-    for(int i=0;i<moves.size();++i){
-        for(int j=0;j<moves.size();++j){
-            if(!selected[j]&&evals_sort[i]==evals[j]){
-                priority[i]=moves[j];
-                selected[j]=true;
-                break;
-            }
-        }
-    }
-
-    for(int i=0;i<moves.size();++i)moves[i]=priority[i];
+    for(int i=0;i<moves.size();++i)moves[i]=evals[i].second;
 }
 
 //αβ法による先読み
