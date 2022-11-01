@@ -107,7 +107,7 @@ float nega_alpha(Board board,float param[param_size],int depth,bool passed,float
     if(max_score==-inf){
         if(passed){
             ++nodes;
-            return board.point[turn_p];
+            return eval(board,param);
         }
         board.push(-1);//手番を変えて探索する
         return -nega_alpha(board,param,depth,true,-beta,-alpha);
@@ -186,14 +186,9 @@ int go(Board board,float param[param_size]){
 #if not defined GA
         //終盤20手で完全読み
         nodes=0;
-        if(board.point[0]+board.point[1]>=60-perfect_search)eval_ref=alphabeta(board_ref,param,60,-inf,inf);
-        // else eval_ref=alphabeta(board_ref,param,6,val,inf);
-        else{
-            eval_ref=-nega_alpha(board_ref,param,10,false,-beta,-alpha);
-            if(alpha<eval_ref){
-                alpha=eval_ref;
-            }
-        }
+        if(board.point[0]+board.point[1]>=60-perfect_search)eval_ref=-nega_alpha(board_ref,param,60,false,-beta,-alpha);
+        else eval_ref=-nega_alpha(board_ref,param,8,false,-beta,-alpha);
+        if(alpha<eval_ref)alpha=eval_ref;
     #if defined Debug
         nodes_total+=nodes;
         std::cout<<priority[i]+1<<": "<<eval_ref<<" "<<nodes/1000<<"k"<<std::endl;
@@ -206,7 +201,7 @@ int go(Board board,float param[param_size]){
             BestMoves[bestmoves_num]=moves[priority[i]];
             ++bestmoves_num;
             val=eval_ref;
-        }else if(eval_ref==val){
+        }else if(eval_ref==val&&board.point[0]+board.point[1]<60-perfect_search){
             BestMoves[bestmoves_num]=moves[priority[i]];
             ++bestmoves_num;
         }
