@@ -4,16 +4,6 @@ long long nodes_total=0;
 bool turn_p;
 
 void move_ordaring(LegalMoveList& moves,Board board,float param[param_size]){
-    float BP[64]={
-        45,-11,4,-1,-1,4,-11,45,
-        -11,-16,-1,-3,-3,2,-16,-11,
-        4,-1,2,-1,-1,2,-1,4,
-        -1,-3,-1,0,0,-1,-3,-1,
-        -1,-3,-1,0,0,-1,-3,-1,
-        4,-1,2,-1,-1,2,-1,4,
-        -11,-16,-1,-3,-3,2,-16,-11,
-        45,-11,4,-1,-1,4,-11,45,
-    };
     float evals[64];
     int priority[64];
     bool selected[64];
@@ -22,10 +12,9 @@ void move_ordaring(LegalMoveList& moves,Board board,float param[param_size]){
 
     // 1手読みの評価値を算出
     for(int i=0;i<moves.size();++i){
-        // board_ref=board;
-        // board_ref.push(moves[i]);
-        // evals[i]=eval(board_ref,param);
-        evals[i]=BP[moves[i]];
+        board_ref=board;
+        board_ref.push(moves[i]);
+        evals[i]=-eval(board_ref,param);
         evals_sort[i]=evals[i];
         selected[i]=false;
     }
@@ -164,16 +153,6 @@ int go(Board board,float param[param_size]){
     bool selected[64];
     std::vector<float>evals_sort(moves.size());
 
-#if defined Debug
-    // for(int i=0;i<moves.size();++i)std::cout<<moves[i]<<" ";
-    // std::cout<<std::endl;
-
-    // move_ordaring(moves,board,param);
-
-    // for(int i=0;i<moves.size();++i)std::cout<<moves[i]<<" ";
-    // std::cout<<std::endl;
-#endif
-
 #if not defined GA
     //5手読みの評価値を算出
     for(int i=0; i<moves.size();++i){
@@ -203,9 +182,6 @@ int go(Board board,float param[param_size]){
         std::cout<<std::endl;
         if(board.point[0]+board.point[1]>=49)std::cout<<"depth: "<<63-board.point[0]-board.point[1]<<std::endl;
     #endif
-    // for(int i=0;i<moves.size();++i){
-    //     priority[i]=i;
-    // }
 #else
     for(int i=0;i<moves.size();++i){
         priority[i]=i;
