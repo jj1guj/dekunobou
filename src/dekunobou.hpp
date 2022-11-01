@@ -18,7 +18,7 @@
 #define GA //遺伝的アルゴリズムによる評価関数生成
 //#define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
 
-#define perfect_search 11 //完全読みを始めるタイミング
+#define perfect_search 13 //完全読みを始めるタイミング
 // #define param_size 489
 #define param_size 13125
 #define inf 1000000000
