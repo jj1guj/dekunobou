@@ -3,7 +3,7 @@ long long nodes;
 long long nodes_total=0;
 bool turn_p;
 
-void move_ordaring(LegalMoveList& moves,Board board,float param[param_size]){
+void move_ordering(LegalMoveList& moves,Board board,float param[param_size]){
     float evals[64];
     int priority[64];
     bool selected[64];
@@ -104,7 +104,7 @@ float nega_alpha(Board board,float param[param_size],int depth,bool passed,float
     }
 
     LegalMoveList moves(board);
-    move_ordaring(moves,board,param);
+    move_ordering(moves,board,param);
 
     float max_score=-inf;
     for(int i=0;i<moves.size();++i){
