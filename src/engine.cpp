@@ -27,10 +27,12 @@ void move_ordering(LegalMoveList& moves,Board board,float param[param_size]){
 float alphabeta(Board board,float param[param_size],int depth,float alpha,float beta){
     //候補手の展開
     LegalMoveList moves(board);
+    move_ordering(moves,board,param);
     if(moves.size()==0){
         //手番を変えて展開
         board.push(-1);
         LegalMoveList moves2(board);
+        move_ordering(moves2,board,param);
         //終局
         if(moves2.size()==0){
             ++nodes;
