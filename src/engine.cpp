@@ -1,6 +1,50 @@
 #include "engine.hpp"
-int nodes;
+long long nodes;
+long long nodes_total=0;
 bool turn_p;
+
+void move_ordaring(LegalMoveList& moves,Board board,float param[param_size]){
+    float BP[64]={
+        45,-11,4,-1,-1,4,-11,45,
+        -11,-16,-1,-3,-3,2,-16,-11,
+        4,-1,2,-1,-1,2,-1,4,
+        -1,-3,-1,0,0,-1,-3,-1,
+        -1,-3,-1,0,0,-1,-3,-1,
+        4,-1,2,-1,-1,2,-1,4,
+        -11,-16,-1,-3,-3,2,-16,-11,
+        45,-11,4,-1,-1,4,-11,45,
+    };
+    float evals[64];
+    int priority[64];
+    bool selected[64];
+    std::vector<float>evals_sort(moves.size());
+    Board board_ref;
+
+    // 1手読みの評価値を算出
+    for(int i=0;i<moves.size();++i){
+        // board_ref=board;
+        // board_ref.push(moves[i]);
+        // evals[i]=eval(board_ref,param);
+        evals[i]=BP[moves[i]];
+        evals_sort[i]=evals[i];
+        selected[i]=false;
+    }
+
+    // 評価値の降順にソート
+    std::sort(evals_sort.begin(),evals_sort.end(),std::greater<float>());
+
+    for(int i=0;i<moves.size();++i){
+        for(int j=0;j<moves.size();++j){
+            if(!selected[j]&&evals_sort[i]==evals[j]){
+                priority[i]=moves[j];
+                selected[j]=true;
+                break;
+            }
+        }
+    }
+
+    for(int i=0;i<moves.size();++i)moves[i]=priority[i];
+}
 
 //αβ法による先読み
 //α: 評価値の最小値
@@ -71,6 +115,8 @@ float nega_alpha(Board board,float param[param_size],int depth,bool passed,float
     }
 
     LegalMoveList moves(board);
+    move_ordaring(moves,board,param);
+
     float max_score=-inf;
     for(int i=0;i<moves.size();++i){
         Board board_ref=board;
@@ -118,6 +164,16 @@ int go(Board board,float param[param_size]){
     bool selected[64];
     std::vector<float>evals_sort(moves.size());
 
+#if defined Debug
+    // for(int i=0;i<moves.size();++i)std::cout<<moves[i]<<" ";
+    // std::cout<<std::endl;
+
+    // move_ordaring(moves,board,param);
+
+    // for(int i=0;i<moves.size();++i)std::cout<<moves[i]<<" ";
+    // std::cout<<std::endl;
+#endif
+
 #if not defined GA
     //5手読みの評価値を算出
     for(int i=0; i<moves.size();++i){
@@ -147,6 +203,9 @@ int go(Board board,float param[param_size]){
         std::cout<<std::endl;
         if(board.point[0]+board.point[1]>=49)std::cout<<"depth: "<<63-board.point[0]-board.point[1]<<std::endl;
     #endif
+    // for(int i=0;i<moves.size();++i){
+    //     priority[i]=i;
+    // }
 #else
     for(int i=0;i<moves.size();++i){
         priority[i]=i;
@@ -166,12 +225,13 @@ int go(Board board,float param[param_size]){
         if(board.point[0]+board.point[1]>=60-perfect_search)eval_ref=alphabeta(board_ref,param,60,-inf,inf);
         // else eval_ref=alphabeta(board_ref,param,6,val,inf);
         else{
-            eval_ref=-nega_alpha(board_ref,param,8,false,-beta,-alpha);
+            eval_ref=-nega_alpha(board_ref,param,10,false,-beta,-alpha);
             if(alpha<eval_ref){
                 alpha=eval_ref;
             }
         }
     #if defined Debug
+        nodes_total+=nodes;
         std::cout<<priority[i]+1<<": "<<eval_ref<<" "<<nodes/1000<<"k"<<std::endl;
     #endif
 #else
@@ -190,6 +250,7 @@ int go(Board board,float param[param_size]){
 #if defined Debug
     //for debug
     std::cout<<"eval: "<<val<<std::endl;
+    std::cout<<"nodes: "<<nodes_total/1000<<"k"<<std::endl;
 #endif
     return BestMoves[rnd_select()%bestmoves_num];
 }

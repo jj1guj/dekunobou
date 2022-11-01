@@ -19,7 +19,7 @@ class LegalMoveList{
     int size(){return move_num;}
 
     //添字で合法手を取得
-    int operator [](int i){
+    int& operator [](int i){
         return this->movelist[i];
     }
 
