@@ -5,10 +5,8 @@
     #include"play.hpp"
 #endif
 
-#if defined API
-    #include"eval_param.hpp"
-#elif defined Console
-    float param[param_size];
+#if not defined GA
+    #include "eval_param.hpp"
 #endif
 
 //対局用の評価関数の読み込み
