@@ -4,13 +4,25 @@ unsigned long long makeLegalBoard(unsigned long long board_player,unsigned long 
 
 class Board{
     public:
-    bool turn=false;//後手のときtrue
-    int ply=1;//今何手目か
-    int point[2]={2,2};
-    unsigned long long board_player=0x0000000810000000;
-    unsigned long long board_opponent=0x0000001008000000;
-    unsigned long long board_black=0x0000000810000000;
-    unsigned long long board_white=0x0000001008000000;
+    bool turn;//後手のときtrue
+    int ply;//今何手目か
+    int point[2];
+    unsigned long long board_player;
+    unsigned long long board_opponent;
+    unsigned long long board_black;
+    unsigned long long board_white;
+
+    Board(){
+        turn=false;//後手のときtrue
+        ply=1;//今何手目か
+        point[0]=2;
+        point[1]=2;
+        board_player=0x0000000810000000;
+        board_opponent=0x0000001008000000;
+        board_black=0x0000000810000000;
+        board_white=0x0000001008000000;
+    }
+    
 
     //指定した座標に何色の石がおいてあるか返す
     int operator [](int i);
