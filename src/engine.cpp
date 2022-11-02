@@ -95,7 +95,7 @@ float alphabeta(Board board,float param[param_size],int depth,float alpha,float 
 
 //オセロAIの教科書をもとに実装
 //https://note.com/nyanyan_cubetech/n/n210cf134b8b1?magazine_key=m54104c8d2f12
-float nega_alpha(Board board,float param[param_size],int depth,bool passed,float alpha,float beta) {
+float nega_alpha(Board& board,float param[param_size],int depth,bool passed,float alpha,float beta) {
     //末端ノードでは評価関数を呼ぶ
     if(depth==0){
         ++nodes;
