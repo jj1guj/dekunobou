@@ -2,17 +2,28 @@
 long long nodes;
 long long nodes_total=0;
 bool turn_p;
+float cell_weight[64]={
+    30, -12, 0, -1, -1, 0, -12, 30,
+    -12, -15, -3, -3, -3, -3, -15, -12,
+    0, -3, 0, -1, -1, 0, -3, 0,
+    -1, -3, -1, -1, -1, -1, -3, -1,
+    -1, -3, -1, -1, -1, -1, -3, -1,
+    0, -3, 0, -1, -1, 0, -3, 0,
+    -12, -15, -3, -3, -3, -3, -15, -12,
+    30, -12, 0, -1, -1, 0, -12, 30
+};
 
 void move_ordering(LegalMoveList& moves,Board board,float param[param_size]){
     // 各要素を{評価値, 候補手}としておき, 評価値と候補手を紐づけることで二重ループを回避する
     std::vector<std::pair<float,int>>evals(moves.size());
-    Board board_ref;
+    // Board board_ref;
 
     // 1手読みの評価値を算出
     for(int i=0;i<moves.size();++i){
-        board_ref=board;
-        board_ref.push(moves[i]);
-        evals[i]={-eval(board_ref,param),moves[i]};
+        // board_ref=board;
+        // board_ref.push(moves[i]);
+        // evals[i]={-eval(board_ref,param),moves[i]};
+        evals[i]={cell_weight[moves[i]],moves[i]};
     }
 
     // 評価値の降順にソート
