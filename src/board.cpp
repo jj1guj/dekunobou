@@ -1,6 +1,5 @@
 #include "board.hpp"
 #include"legalmovelist.hpp"
-#include<iostream>
 
 unsigned long long makeLegalBoard(unsigned long long board_player,unsigned long long board_opponent){
     //左右端の番人

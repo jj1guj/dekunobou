@@ -1,3 +1,4 @@
+#include<iostream>
 #pragma once
 unsigned long long makeLegalBoard(unsigned long long board_player,unsigned long long board_opponent);
 
