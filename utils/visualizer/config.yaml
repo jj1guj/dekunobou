@@ -1,5 +1,5 @@
 {
-  "param_dir": "../build/data", #生成した遺伝子が保存されているパス
+  "param_dir": "../../build/data", #生成した遺伝子が保存されているパス
   "param_size": 13125, #評価関数のパラメータサイズ(dekunobou.hppのparam_sizeと値を揃える)
   "gene_num": 1024, #GAを行う際の遺伝子数(ga.hppのNと値を揃える)
   "move_h": 480,
