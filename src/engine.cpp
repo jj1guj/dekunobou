@@ -205,7 +205,7 @@ int go(Board board,float param[param_size]){
         std::cout<<priority[i]+1<<": "<<eval_ref<<" "<<nodes/1000<<"k"<<std::endl;
     #endif
 #else
-    eval_ref=alphabeta(board_ref,param,0,val,inf);
+    eval_ref = eval(board_ref, param);
 #endif
         if(eval_ref>val){
             bestmoves_num=0;
@@ -222,5 +222,6 @@ int go(Board board,float param[param_size]){
     std::cout<<"eval: "<<val<<std::endl;
     std::cout<<"nodes: "<<nodes_total/1000<<"k"<<std::endl;
 #endif
-    return BestMoves[rnd_select()%bestmoves_num];
+    int tmp = rnd_select() % bestmoves_num;
+    return BestMoves[tmp];
 }
