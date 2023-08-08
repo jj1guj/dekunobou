@@ -1,13 +1,14 @@
-#include "dekunobou.hpp"
 #include "board.hpp"
+#include "dekunobou.hpp"
 #include "legalmovelist.hpp"
 
 /**********paramについて************/
-//新しい評価関数の仕様
+// 新しい評価関数の仕様
 /*
 これを参考にする
 https://qiita.com/na-o-ys/items/10d894635c2a6c07ac70
-角周辺の石の配置は4桁の3進数とみなしてこれを10進数に変換し, 対応するインデックスから値を引っ張ってくる
+角周辺の石の配置は4桁の3進数とみなしてこれを10進数に変換し,
+対応するインデックスから値を引っ張ってくる
 a*盤上にしめる自石の割合+辺の形の評価値の合計
 なにもない: 0
 先手の石: 1
@@ -27,5 +28,5 @@ a*盤上にしめる自石の割合+辺の形の評価値の合計
 488: a(終盤)
 */
 
-float calc_shape_value(Board& board,float param[param_size],int cur_offset);
-float eval(Board& board,float param[param_size]);
+float calc_shape_value(Board &board, float param[param_size], int cur_offset);
+float eval(Board &board, float param[param_size]);
