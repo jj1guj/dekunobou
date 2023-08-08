@@ -10,7 +10,7 @@ float param_white[param_size];
 //交叉関連
 int M=100;//1世代での交叉回数
 int match_genetic=30;//交叉時の親と子の対局数
-int thresh=0.55*match_genetic;//勝数がこの値を超えたら親を子で置き換える
+int thresh=0.65*match_genetic;//勝数がこの値を超えたら親を子で置き換える
 float mutation_start=24*3600*1000;//突然変異を始める時間(msecで指定)
 float alpha_default=1e-3;//突然変異が開始してからの突然変異の確率
 float alpha=0;//突然変異の確率
