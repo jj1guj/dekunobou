@@ -218,7 +218,7 @@ int go(Board board, float param[param_size]) {
               << "k" << std::endl;
 #endif
 #else
-    eval_ref = eval(board_ref, param);
+    eval_ref = -nega_alpha(board_ref, param, 0, false, -inf, inf);
 #endif
     if (eval_ref > val) {
       bestmoves_num = 0;
