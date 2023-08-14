@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <getopt.h>
 #include <iostream>
+#include <omp.h>
 #include <regex>
 #include <string>
 #pragma once
@@ -51,7 +52,7 @@ struct Option_ga {
   int mutation_start = 0;
   float mutation_prob = 1e-3;
   int time_limit = 36;
-  int thread = 10;
+  int thread = omp_get_max_threads();
   std::string out_path = "";
 };
 
