@@ -1,5 +1,4 @@
 #include "ga.hpp"
-#if defined GA
 
 // 評価関数のパラメータ関連
 float params[N][param_size];
@@ -108,7 +107,8 @@ void out_params(std::string path) {
 
 // 交叉
 void intersection(float p1[param_size], float p2[param_size], int cur1,
-                  int cur2) {
+                  int cur2, const Option &option) {
+
   int win_val[2];
   // p1: 親1, p2: 親2
   // c1: 子1(p1ベースでp2と交叉した後のもの)
@@ -185,16 +185,16 @@ void intersection(float p1[param_size], float p2[param_size], int cur1,
     win_val[1] = 0;
     for (int b = 0; b < match_genetic; ++b) {
       if (win_impossible[b] <= win_val[0] && win_val[0] <= thresh) {
-        if (play_engine(p1, c1) == 1)
+        if (play_engine(p1, c1, option) == 1)
           ++win_val[0]; // 親1が先手, 子1が後手
-        if (play_engine(c1, p1) == 0)
+        if (play_engine(c1, p1, option) == 0)
           ++win_val[0]; // 子1が先手, 親1が後手
       }
 
       if (win_impossible[b] <= win_val[1] && win_val[1] <= thresh) {
-        if (play_engine(p2, c2) == 1)
+        if (play_engine(p2, c2, option) == 1)
           ++win_val[1]; // 親1が先手, 子1が後手
-        if (play_engine(c2, p2) == 0)
+        if (play_engine(c2, p2, option) == 0)
           ++win_val[1]; // 子1が先手, 親1が後手
       }
     }
@@ -213,7 +213,18 @@ void intersection(float p1[param_size], float p2[param_size], int cur1,
   memcpy(params[cur2], p2, memsize);
 }
 
-void ga(int threads_num) {
+void ga(const Option &option) {
+  int threads_num;
+  // セットされたパラメータを反映
+  M = option.option_ga.M;
+  match_genetic = option.option_ga.match_genetic;
+  thresh = option.option_ga.thresh * match_genetic;
+  mutation_start = option.option_ga.mutation_start * 3600 * 1000;
+  alpha_default = option.option_ga.mutation_prob;
+  timelimit = option.option_ga.time_limit * 3600;
+  data_path = option.option_ga.out_path;
+  threads_num = option.option_ga.thread;
+
   // 変数の初期化
   init_R3();
   match_genetic /= 2;  // 先後入れ替えて対局するので2で割る
@@ -272,7 +283,8 @@ void ga(int threads_num) {
 // 交叉を並列に実行
 #pragma omp parallel for num_threads(concurrency)
     for (int i = 0; i < concurrency; ++i) {
-      intersection(G[2 * i], G[2 * i + 1], cursors[2 * i], cursors[2 * i + 1]);
+      intersection(G[2 * i], G[2 * i + 1], cursors[2 * i], cursors[2 * i + 1],
+                   option);
     }
 
     // 今の遺伝子をファイルに出力
@@ -317,13 +329,13 @@ void ga(int threads_num) {
     std::cout << i << std::endl;
     for (int j = i + 1; j < N; ++j) {
       for (int k = 0; k < match_times; ++k) {
-        winner = play_engine(params[i], params[j]);
+        winner = play_engine(params[i], params[j], option);
         if (winner == 0)
           ++win_count[i];
         if (winner == 1)
           ++win_count[j];
 
-        winner = play_engine(params[j], params[i]);
+        winner = play_engine(params[j], params[i], option);
         if (winner == 0)
           ++win_count[j];
         if (winner == 1)
@@ -349,4 +361,3 @@ void ga(int threads_num) {
     eval_output << params[best][i] << std::endl;
   eval_output.close();
 }
-#endif

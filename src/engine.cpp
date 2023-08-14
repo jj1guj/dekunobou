@@ -132,7 +132,7 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
   return max_score;
 }
 
-int go(Board board, float param[param_size]) {
+int go(Board board, float param[param_size], const Option &option) {
   turn_p = board.turn;
 
   float val = -inf;
@@ -159,42 +159,45 @@ int go(Board board, float param[param_size]) {
   bool selected[64];
   std::vector<float> evals_sort(moves.size());
 
-#if not defined GA
-  // 5手読みの評価値を算出
-  for (int i = 0; i < moves.size(); ++i) {
-    board_ref = board;
-    board_ref.push(moves[i]);
-    evals[i] = alphabeta(board_ref, param, 4, val, inf);
-    evals_sort[i] = evals[i];
-    val = std::max(evals[i], val);
-    selected[i] = false;
-  }
+  if (option.mode != Mode::ga) {
+    // 5手読みの評価値を算出
+    for (int i = 0; i < moves.size(); ++i) {
+      board_ref = board;
+      board_ref.push(moves[i]);
+      evals[i] = alphabeta(board_ref, param, 4, val, inf);
+      evals_sort[i] = evals[i];
+      val = std::max(evals[i], val);
+      selected[i] = false;
+    }
 
-  // 評価値の降順にソート
-  std::sort(evals_sort.begin(), evals_sort.end(), std::greater<float>());
+    // 評価値の降順にソート
+    std::sort(evals_sort.begin(), evals_sort.end(), std::greater<float>());
 
-  for (int i = 0; i < moves.size(); ++i) {
-    for (int j = 0; j < moves.size(); ++j) {
-      if (!selected[j] && evals_sort[i] == evals[j]) {
-        priority[i] = j;
-        selected[j] = true;
-        break;
+    for (int i = 0; i < moves.size(); ++i) {
+      for (int j = 0; j < moves.size(); ++j) {
+        if (!selected[j] && evals_sort[i] == evals[j]) {
+          priority[i] = j;
+          selected[j] = true;
+          break;
+        }
       }
     }
+
+    if (option.debug) {
+      std::cout << "priority: ";
+      for (int i = 0; i < moves.size(); ++i)
+        std::cout << priority[i] + 1 << " ";
+      std::cout << std::endl;
+      if (board.point[0] + board.point[1] >= 49)
+        std::cout << "depth: " << 63 - board.point[0] - board.point[1]
+                  << std::endl;
+    }
+  } else {
+    for (int i = 0; i < moves.size(); ++i) {
+      priority[i] = i;
+    }
   }
-#if defined Debug
-  std::cout << "priority: ";
-  for (int i = 0; i < moves.size(); ++i)
-    std::cout << priority[i] + 1 << " ";
-  std::cout << std::endl;
-  if (board.point[0] + board.point[1] >= 49)
-    std::cout << "depth: " << 63 - board.point[0] - board.point[1] << std::endl;
-#endif
-#else
-  for (int i = 0; i < moves.size(); ++i) {
-    priority[i] = i;
-  }
-#endif
+
   val = -inf;
   float alpha = -inf, beta = inf;
   for (int i = 0; i < moves.size(); i++) {
@@ -203,23 +206,24 @@ int go(Board board, float param[param_size]) {
     board_ref = board;
     board_ref.push(moves[priority[i]]);
 
-#if not defined GA
-    // 終盤20手で完全読み
-    nodes = 0;
-    if (board.point[0] + board.point[1] >= 60 - perfect_search)
-      eval_ref = -nega_alpha(board_ref, param, 60, false, -beta, -alpha);
-    else
-      eval_ref = -nega_alpha(board_ref, param, 8, false, -beta, -alpha);
-    if (alpha < eval_ref)
-      alpha = eval_ref;
-#if defined Debug
-    nodes_total += nodes;
-    std::cout << priority[i] + 1 << ": " << eval_ref << " " << nodes / 1000
-              << "k" << std::endl;
-#endif
-#else
-    eval_ref = -nega_alpha(board_ref, param, 0, false, -inf, inf);
-#endif
+    if (option.mode != Mode::ga) {
+      // 終盤20手で完全読み
+      nodes = 0;
+      if (board.point[0] + board.point[1] >= 60 - perfect_search)
+        eval_ref = -nega_alpha(board_ref, param, 60, false, -beta, -alpha);
+      else
+        eval_ref = -nega_alpha(board_ref, param, 8, false, -beta, -alpha);
+      if (alpha < eval_ref)
+        alpha = eval_ref;
+      if (option.debug) {
+        nodes_total += nodes;
+        std::cout << priority[i] + 1 << ": " << eval_ref << " " << nodes / 1000
+                  << "k" << std::endl;
+      }
+    } else {
+      eval_ref = -nega_alpha(board_ref, param, 0, false, -inf, inf);
+    }
+
     if (eval_ref > val) {
       bestmoves_num = 0;
       BestMoves[bestmoves_num] = moves[priority[i]];
@@ -231,11 +235,13 @@ int go(Board board, float param[param_size]) {
       ++bestmoves_num;
     }
   }
-#if defined Debug
-  // for debug
-  std::cout << "eval: " << val << std::endl;
-  std::cout << "nodes: " << nodes_total / 1000 << "k" << std::endl;
-#endif
+
+  if (option.debug) {
+    // for debug
+    std::cout << "eval: " << val << std::endl;
+    std::cout << "nodes: " << nodes_total / 1000 << "k" << std::endl;
+  }
+
   int tmp = rnd_select() % bestmoves_num;
   return BestMoves[tmp];
 }
