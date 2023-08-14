@@ -277,7 +277,7 @@ int set_option(int argc, char **argv, Option &option) {
 
   // parse
   option_status = parse_cmd(argc, argv, option);
-  print_option(option);
+
   if (option_status != option_status_t::success) {
     print_help(option_status);
     print_err(option_status);
