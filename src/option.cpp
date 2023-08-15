@@ -36,9 +36,54 @@ void print_err(const option_status_t status) {
 }
 
 void print_help(const option_status_t status) {
+  int max_thread = omp_get_max_threads();
   switch (status) {
   case option_status_t::help:
-    std::cout << "help" << std::endl;
+    std::cout << "Usage: dekunobou --mode <mode name> [options]" << std::endl;
+    std::cout << "  --mode <mode name>           - Mode name to run"
+              << std::endl;
+    std::cout << "         ga                    - Generate eval params by "
+                 "genetic algorithm."
+              << std::endl;
+    std::cout
+        << "         web                   - For web application's API mode."
+        << std::endl;
+    std::cout << "  --help                       - Print this help."
+              << std::endl;
+    std::cout << "  -d                           - Enable debug mode."
+              << std::endl;
+    std::cout << "  ga mode options:" << std::endl;
+    std::cout << "    --out_path <output path>   - [Required] Directory to "
+                 "which the generated parameters are output."
+              << std::endl;
+    std::cout << "    -M <integer>               - Number of intersections in "
+                 "one generation. default: 100"
+              << std::endl;
+    std::cout << "    --match_genetic <integer>  - Number of games between "
+                 "parent and child at intersection. default: 30"
+              << std::endl;
+    std::cout << "    --thresh <number>          - Threshold for the winning "
+                 "rate of replacing a parent with a child(0 ~ 1). default: 0.72"
+              << std::endl;
+    std::cout << "    --mutation_start <integer> - Time to start mutation "
+                 "(hour). default: 0"
+              << std::endl;
+    std::cout << "    --mutation_prob <number>  - Probability of mutation (0 ~ 1). "
+                 "default: 1e-3"
+              << std::endl;
+    std::cout << "    --time_limit <integer>     - Time to perform the genetic "
+                 "algorithm (hour). default: 36"
+              << std::endl;
+    std::cout << "    --thread <integer>         - Number of threads when "
+                 "performing genetic algorithm (1 ~ "
+              << max_thread << "). default: " << max_thread << std::endl;
+    std::cout << "  web mode options:" << std::endl;
+    std::cout << "    -b <string>                - [Required] Current board. "
+                 "Black is \'1\', white is \'2\', and none is \'0\'."
+              << std::endl;
+    std::cout << "    -t <0 or 1>                - [Required] Current turn. 0 "
+                 "is Black, 1 is White."
+              << std::endl;
     break;
 
   default:
