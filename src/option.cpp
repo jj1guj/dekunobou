@@ -68,7 +68,7 @@ void print_help(const option_status_t status) {
     std::cout << "    --mutation_start <integer> - Time to start mutation "
                  "(hour). default: 0"
               << std::endl;
-    std::cout << "    --mutation_prob <integer>  - Probability of mutation. "
+    std::cout << "    --mutation_prob <number>  - Probability of mutation (0 ~ 1). "
                  "default: 1e-3"
               << std::endl;
     std::cout << "    --time_limit <integer>     - Time to perform the genetic "
