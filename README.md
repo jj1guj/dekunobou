@@ -1,189 +1,108 @@
 # でくのぼう
- 遺伝的アルゴリズムを使用したオセロAI
- (English version is [below](https://github.com/jj1guj/dekunobou/blob/main/README.md#dekunobou))
+
+遺伝的アルゴリズムを使用したオセロ AI
+(English version is [below](https://github.com/jj1guj/dekunobou/blob/main/README.md#dekunobou))
 
 # 動作環境
+
 - Linux  
-注意!: このプログラムはWindowsでの動作を確認していません.  
-もしOSがWindowsでしたらWSLの使用を推奨します.
+  注意!: このプログラムは Windows での動作を確認していません.  
+  もし OS が Windows でしたら WSL の使用を推奨します.
 
 # 必要なライブラリ
+
 - OpenMP
 
+# ビルド
+
+```
+mkdir build && cd build
+cmake ..
+make
+```
+
 # 使い方
-## 評価関数を生成する
-1. `dekunobou.hpp`を開き, 15行目から18行目を以下のように編集する
-```cpp
-15 //#define Debug //デバッグモード
-16 //#define Console //コンソールモードでの対局(default)
-17 #define GA //遺伝的アルゴリズムによる評価関数生成
-18 //#define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
-```
 
-2. 以下のコマンドを実行してビルドする
-```bash
-mkdir build && cd build
-cmake ..
-make
+`ulimit -s unlimited`はwebモードでは不要です.
 ```
-
-3. 以下のコマンドを実行する
-```bash
 ulimit -s unlimited
-./dekunobou [スレッド数]
+./dekunobou --mode <モード名> [options]
 ```
 
-## でくのぼうとターミナル上で対戦する
-1. `dekunobou.hpp`を開き, 15行目から18行目を以下のように編集する.
-```cpp
-15 //#define Debug //デバッグモード
-16 #define Console //コンソールモードでの対局(default)
-17 //#define GA //遺伝的アルゴリズムによる評価関数生成
-18 //#define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
 ```
-
-2. 以下のコマンドを実行してビルドする
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
-
-3. 以下のコマンドを実行する
-```bash
-ulimit -s unlimited
-./dekunobou
-```
-あとは表示されたメッセージに従って遊んでください.
-
-## ブラウザででくのぼうと対戦する
-1. `dekunobou.hpp`を開き, 15行目から18行目を以下のように編集する.
-```cpp
-15 //#define Debug //デバッグモード
-16 //#define Console //コンソールモードでの対局(default)
-17 //#define GA //遺伝的アルゴリズムによる評価関数生成
-18 #define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
-```
-
-2. 以下のコマンドを実行してビルドする
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
-
-3. [dekunobou-web]("https://github.com/jj1guj/dekunobou-web") をcloneし, `api/`に2.でビルドしたバイナリをコピーする.
-```bash
-git clone https://github.com/jj1guj/dekunobou-web
-cd dekunobou-web/api
-cp [path-to-build]/dekunobou .
-```
-
-4. `scripts/main.js`を開き, 220行目を以下のように編集する.
-```javascript
-220 const url="http://localhost:5000/put"
-```
-
-5. dekunobou-web内で以下のコマンドを実行し, `index.html`をブラウザで開く
-```bash
-cd api
-pip3 install -r requirements.txt
-python3 app.py
+--mode <mode name>           - 実行するモード.
+         ga                    - 遺伝的アルゴリズムによる評価関数生成.
+         web                   - Webアプリケーション向けの実行機能.
+  --help                       - ヘルプを表示.
+  -d                           - デバッグモードの有効化.
+  ga mode options:
+    --out_path <output path>   - [Required] 評価関数の出力先ディレクトリ.
+    -M <integer>               - 1世代あたりの交叉の実行回数. default: 100
+    --match_genetic <integer>  - 交叉時の親と子の対局数. default: 30
+    --thresh <number>          - 親を子で置き換える勝率の閾値 (0 ~ 1). default: 0.72
+    --mutation_start <integer> - 突然変異を始める時間 (hour). default: 0
+    --mutation_prob <integer>  - 突然変異の確率 (0 ~ 1). default: 1e-3
+    --time_limit <integer>     - 遺伝的アルゴリズムを実行する時間 (hour). default: 36
+    --thread <integer>         - 遺伝的アルゴリズムを実行するスレッド数 (1 ~ 実行環境のCPUのスレッド数). default: 実行環境のCPUのスレッド数
+  web mode options:
+    -b <string>                - [Required] 限局面. 黒石は '1', 白石は '2', 何も置いてなければ '0'. 盤の左上から右下にかけて左から順番に変換する
+    -t <0 or 1>                - [Required] 限局面の手番. 0 が先手, 1 が後手.
 ```
 
 # バグ報告など
-バグ等ありましたらissueまでよろしくおねがいします.
+
+バグ等ありましたら issue までよろしくおねがいします.
 
 # dekunobou
- Othello AI using GA
+
+Othello AI using GA
 
 # Environments
+
 - Linux  
-Caution: This program is not confirmed on Windows.
-If your OS is Windows, please use WSL.
+  Caution: This program is not confirmed on Windows.
+  If your OS is Windows, please use WSL.
 
 # Requirements
+
 - OpenMP
 
+# Build
+
+```
+mkdir build && cd build
+cmake ..
+make
+```
+
 # Usage
-## Generate evaluating function
-1. Edit `dekunobou.hpp` from line 15 to line 18 like this.
-```cpp
-15 //#define Debug //デバッグモード
-16 //#define Console //コンソールモードでの対局(default)
-17 #define GA //遺伝的アルゴリズムによる評価関数生成
-18 //#define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
-```
+`ulimit -s unlimited` is not required in "web" mode.
 
-2. Run these comands and build dekunobou.
-```bash
-mkdir build && cd build
-cmake ..
-make
 ```
-
-3. Run this command
-```bash
 ulimit -s unlimited
-./dekunobou [number of threads]
+./dekunobou --mode <mode name> [options]
 ```
 
-## Play with dekunobou via terminal
-1. Edit `dekunobou.hpp` from line 15 to line 18 like this.
-```cpp
-15 //#define Debug //デバッグモード
-16 #define Console //コンソールモードでの対局(default)
-17 //#define GA //遺伝的アルゴリズムによる評価関数生成
-18 //#define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
 ```
-
-2. Run these comands and build dekunobou.
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
-
-3. Run this command
-```bash
-ulimit -s unlimited
-./dekunobou
-```
-
-## Play with dekunobou via Web browser
-1. Edit `dekunobou.hpp` from line 15 to line 18 like this.
-```cpp
-15 //#define Debug //デバッグモード
-16 //#define Console //コンソールモードでの対局(default)
-17 //#define GA //遺伝的アルゴリズムによる評価関数生成
-18 #define API //https://jj1guj.net/dekunobou-web/ 向けのAPI用バイナリ
-```
-
-2. Run these comands and build dekunobou.
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
-
-3. Clone [dekunobou-web]("https://github.com/jj1guj/dekunobou-web") and copy binary (dekunobou) to `api/`
-```bash
-git clone https://github.com/jj1guj/dekunobou-web
-cd dekunobou-web/api
-cp [path-to-build]/dekunobou .
-```
-
-4. Edit `scripts/main.js` line 220 like this
-```javascript
-220 const url="http://localhost:5000/put"
-```
-
-5. Run this command and open `index.html` by browser.
-```bash
-cd api
-pip3 install -r requirements.txt
-python3 app.py
+--mode <mode name>           - Mode name to run
+         ga                    - Generate eval params by genetic algorithm.
+         web                   - For web application's API mode.
+  --help                       - Print this help.
+  -d                           - Enable debug mode.
+  ga mode options:
+    --out_path <output path>   - [Required] Directory to which the generated parameters are output.
+    -M <integer>               - Number of intersections in one generation. default: 100
+    --match_genetic <integer>  - Number of games between parent and child at intersection. default: 30
+    --thresh <number>          - Threshold for the winning rate of replacing a parent with a child(0 ~ 1). default: 0.72
+    --mutation_start <integer> - Time to start mutation (hour). default: 0
+    --mutation_prob <integer>  - Probability of mutation. default: 1e-3
+    --time_limit <integer>     - Time to perform the genetic algorithm (hour). default: 36
+    --thread <integer>         - Number of threads when performing genetic algorithm (1 ~ [Number of threads on your CPU]). default: [Number of threads on your CPU]
+  web mode options:
+    -b <string>                - [Required] Current board. Black is '1', white is '2', and none is '0'.
+    -t <0 or 1>                - [Required] Current turn. 0 is Black, 1 is White.
 ```
 
 # Bug report and etc.
+
 If you find bugs, please take a issue.
