@@ -23,7 +23,8 @@ make
 
 # 使い方
 
-`ulimit -s unlimited`はwebモードでは不要です.
+`ulimit -s unlimited`は web モードでは不要です.
+
 ```
 ulimit -s unlimited
 ./dekunobou --mode <モード名> [options]
@@ -47,6 +48,7 @@ ulimit -s unlimited
   web mode options:
     -b <string>                - [Required] 限局面. 黒石は '1', 白石は '2', 何も置いてなければ '0'. 盤の左上から右下にかけて左から順番に変換する
     -t <0 or 1>                - [Required] 限局面の手番. 0 が先手, 1 が後手.
+    --depth <integer>          - 探索深さ. default: 9
 ```
 
 # バグ報告など
@@ -76,6 +78,7 @@ make
 ```
 
 # Usage
+
 `ulimit -s unlimited` is not required in "web" mode.
 
 ```
@@ -101,6 +104,7 @@ ulimit -s unlimited
   web mode options:
     -b <string>                - [Required] Current board. Black is '1', white is '2', and none is '0'.
     -t <0 or 1>                - [Required] Current turn. 0 is Black, 1 is White.
+    --depth <integer>          - Depth to search. default: 9
 ```
 
 # Bug report and etc.

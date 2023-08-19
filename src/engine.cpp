@@ -212,7 +212,7 @@ int go(Board board, float param[param_size], const Option &option) {
       if (board.point[0] + board.point[1] >= 60 - perfect_search)
         eval_ref = -nega_alpha(board_ref, param, 60, false, -beta, -alpha);
       else
-        eval_ref = -nega_alpha(board_ref, param, 8, false, -beta, -alpha);
+        eval_ref = -nega_alpha(board_ref, param, option.option_web.depth - 1, false, -beta, -alpha);
       if (alpha < eval_ref)
         alpha = eval_ref;
       if (option.debug) {

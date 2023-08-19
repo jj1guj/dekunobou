@@ -20,6 +20,7 @@ static struct option long_options[] = {
     {"out_path", required_argument, NULL, 0},
     {"board", required_argument, NULL, 'b'},
     {"turn", required_argument, NULL, 't'},
+    {"depth", required_argument, NULL, 0},
     {"eval", required_argument, NULL, 'e'},
     {"debug", no_argument, NULL, 'd'},
     {"help", no_argument, NULL, 'h'}};
@@ -60,6 +61,7 @@ struct Option_web {
   std::string board;
   bool turn;
   bool is_turn_set = false;
+  int depth = 9;
   std::string eval = "";
 };
 
