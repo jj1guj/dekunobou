@@ -68,9 +68,10 @@ void print_help(const option_status_t status) {
     std::cout << "    --mutation_start <integer> - Time to start mutation "
                  "(hour). default: 0"
               << std::endl;
-    std::cout << "    --mutation_prob <number>  - Probability of mutation (0 ~ 1). "
-                 "default: 1e-3"
-              << std::endl;
+    std::cout
+        << "    --mutation_prob <number>  - Probability of mutation (0 ~ 1). "
+           "default: 1e-3"
+        << std::endl;
     std::cout << "    --time_limit <integer>     - Time to perform the genetic "
                  "algorithm (hour). default: 36"
               << std::endl;
@@ -83,6 +84,8 @@ void print_help(const option_status_t status) {
               << std::endl;
     std::cout << "    -t <0 or 1>                - [Required] Current turn. 0 "
                  "is Black, 1 is White."
+              << std::endl;
+    std::cout << "    --depth <integer>          - Depth to search. default: 9"
               << std::endl;
     break;
 
@@ -205,6 +208,10 @@ option_status_t parse_cmd(int argc, char **argv, Option &option) {
         option.option_ga.out_path = opt_arg;
       } else if (long_option_name == "eval") {
         option.option_web.eval = opt_arg;
+      } else if (long_option_name == "depth") {
+        option_status = to_int(opt_arg, option.option_web.depth);
+        if (option_status != option_status_t::success)
+          return option_status;
       }
       break;
     case 'b':
@@ -300,6 +307,9 @@ option_status_t validate_option_web(Option_web &option_web) {
     if (!std::filesystem::is_regular_file(option_web.eval))
       return option_status_t::not_file;
   }
+
+  if (option_web.depth <= 0)
+    return option_status_t::out_of_range;
   return option_status_t::success;
 }
 
