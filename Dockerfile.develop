@@ -6,4 +6,5 @@ RUN apt-get update \
     && pip install opencv-python matplotlib numpy tqdm pyyaml \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/*
+RUN ln -s python3 /usr/bin/python
 WORKDIR /root
