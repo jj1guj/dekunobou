@@ -1,4 +1,5 @@
 # 指定した回数だけ対戦し, 対戦結果等を表示する
+import os
 import random
 import subprocess
 import tqdm
@@ -11,15 +12,25 @@ with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
 
-def go(board, engine_path):
+def go(board, engine_path, eval_path):
     # エンジンに実行権限を与える
     subprocess.run(["chmod", "u+x", engine_path])
-    cp = subprocess.run([engine_path, str(board), str(
-        int(board.turn))], encoding="utf-8", stdout=subprocess.PIPE)
-    return int(cp.stdout)
+
+    # エンジンの起動コマンドを設定する
+    cmd = [engine_path, "--mode", "web", "-b",
+           str(board), "-t", str(int(board.turn))]
+    # 評価関数のパスが存在しているときは評価関数のパスを起動コマンドに加える
+    if eval_path and os.path.isfile(eval_path):
+        cmd += ["--eval", eval_path]
+    cp = subprocess.run(cmd, encoding="utf-8", stdout=subprocess.PIPE)
+    cp_stdout = cp.stdout.replace("\n", "")
+
+    if not cp_stdout.isdecimal():
+        return -1
+    return int(cp_stdout)
 
 
-def match(engine_black, engine_white, kif=None):
+def match(engine_black, eval_black, engine_white, eval_white, kif=None):
     if kif is not None:
         board = Board(kif)
     else:
@@ -40,9 +51,9 @@ def match(engine_black, engine_white, kif=None):
 
         # 後手番
         if board.turn:
-            move = go(board, engine_white)
+            move = go(board, engine_white, eval_white)
         else:
-            move = go(board, engine_black)
+            move = go(board, engine_black, eval_black)
 
         # 着手
         board.push(move)
@@ -59,7 +70,7 @@ if __name__ == "__main__":
     result = [0, 0, 0]  # [engine1の勝ち数,engine2の勝ち数,引き分け回数]
 
     L = None
-    if config["book_path"] is not None:
+    if config["book_path"] and os.path.isfile(config["book_path"]):
         with open(config["book_path"]) as f:
             L = f.readlines()
             L = [i.replace("\n", "") for i in L]
@@ -72,11 +83,15 @@ if __name__ == "__main__":
     print("engine2:", config["engine2"])
     for i in tqdm.tqdm(range(config["match_times"]//2)):
         if L is not None:
-            r1 = match(config["engine1"], config["engine2"], L[i])
-            r2 = match(config["engine2"], config["engine1"], L[i])
+            r1 = match(config["engine1"], config["engine1_eval"],
+                       config["engine2"], config["engine2_eval"], L[i])
+            r2 = match(config["engine2"], config["engine2_eval"],
+                       config["engine1"], config["engine1_eval"], L[i])
         else:
-            r1 = match(config["engine1"], config["engine2"])
-            r2 = match(config["engine2"], config["engine1"])
+            r1 = match(config["engine1"], config["engine1_eval"],
+                       config["engine2"], config["engine2_eval"])
+            r2 = match(config["engine2"], config["engine2_eval"],
+                       config["engine1"], config["engine1_eval"])
 
         result[r1] += 1
         if r2 == 2:
