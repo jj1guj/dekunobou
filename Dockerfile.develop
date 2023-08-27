@@ -1,10 +1,18 @@
 FROM ubuntu:focal
+
+#install cpp requirements
 RUN apt-get update \
     && apt-get install -y tzdata \
     && apt-get install -y --no-install-recommends build-essential cmake git python3-pip libgl1-mesa-dev libglib2.0-0 \
-    && pip install --upgrade pip \
-    && pip install opencv-python matplotlib numpy tqdm pyyaml \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/*
+
+# install python requirements
 RUN ln -s python3 /usr/bin/python
+COPY utils/requirements.txt /tmp
+WORKDIR /tmp
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && rm -rf requirements.txt
+
 WORKDIR /root
