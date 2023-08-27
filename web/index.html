@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>reversi</title>
+        <meta charset="utf-8" >
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="style/style.css">
+    </head>
+
+    <body>
+        <h1>Reversi</h1>
+        <!--リポジトリは <a href="https://github.com/jj1guj/dekunobou-web">こちら</a> <br>
+        AIのリポジトリは <a href="https://github.com/jj1guj/dekunobou">こちら</a> <br>
+        バグ報告は <a href="https://github.com/jj1guj/dekunobou-web/issues">こちら</a> <br>
+        詳細な解説記事は <a href="https://jj1guj.hatenablog.com/entry/2021/12/13/145631">こちら</a> <br>
+        アップデート等の情報はこちらでつぶやきます <a href="https://twitter.com/jj1guj">@jj1guj</a><br>-->
+        <h3>
+            対戦後<a href="https://twitter.com/search?q=%23dekunobou&src=typed_query">#dekunobou</a>や
+            <a href="https://twitter.com/search?q=%23%E3%83%A1%E3%82%A4%E3%82%AB%E3%83%BC%E3%80%86%E5%88%87%E7%A5%AD&src=recent_search_click&f=live">
+                #メイカー〆切祭
+            </a>
+            をつけてツイートお願いします！(ツイートする際は1度このWiFiから切断してください)
+        </h3>
+
+        <h2>
+            通算戦績: 
+            <div id="ai_win" style="display: inline;"></div>勝 
+            <div id="ai_lose" style="display: inline;"></div>敗 
+            <div id="draw" style="display: inline;"></div>分 
+            (勝率: 
+            <div id="win_rate" style="display: inline;"></div>%
+            )
+        </h2>
+        <h3>
+            <form name="select_turn">
+                <input type="radio" name="human_turn" id="human_first" value="human_first" checked>人間が先手
+                <input type="radio" name="human_turn" id="human_second" value="human_second">人間が後手<br>
+            </form>
+            <button onclick="game_start()" class="game_start">対局開始</button>
+        </h3>
+        <div id="board"></div>
+        手番: <div id="turn" style="display: inline;"></div><br>
+        <div id="point_black" style="display: inline;"></div>
+         vs 
+        <div id="point_white" style="display: inline;"></div><br>
+        <div id="result"></div>
+        <script src="scripts/main.js"></script>
+        <!--<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" 
+            class="twitter-share-button" data-text="でくのぼう -遺伝的アルゴリズムを使ったオセロAI-" 
+            data-hashtags="dekunobou" data-show-count="false">Tweet</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+        <!--<button onclick="tweet()">Tweet</button>-->
+    </body>
+</html>

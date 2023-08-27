@@ -1,0 +1,85 @@
+div#paging
+{
+    text-align: center;
+    /* スクロールに対してページングボックスの位置を固定 */
+    position: fixed;
+    /* 位置を指定 */
+    bottom: 0;
+    right:45%;
+}
+
+div#pagingbox{
+    background: #FFF;
+}
+
+th{
+    /* ヘッダ背景塗りつぶし */
+    background: #008000;
+}
+
+th,td {
+    /* 枠線を1本線指定 */
+    border: solid 1px;
+    width: 11vmin;
+    height: 11vmin;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table{
+    /* 枠線を1本線指定 */
+    border: solid 3px;
+    border-collapse:  collapse;
+    white-space: nowrap;
+    background: #008000;
+}
+
+footer{
+    position: fixed;
+    width: 100%;
+    background-color: #C0C0C0;
+    padding: 15px 0;
+    bottom: 0; /*下に固定*/
+}
+
+.game_start{
+    width: 150px;
+    height: 50px;
+    padding: 10px;
+    font-size: 120%;
+    background-color: #008800;
+    color:#FFF;
+}
+
+.can_put{
+    display: inline-block;
+    /* width:20px; */
+    /* height:20px; */
+    width: 4.4vmin;
+    height: 4.4vmin;
+    border-radius:50%;
+    vertical-align: middle;
+    background:gray;
+}
+
+.stone_black{
+    display: inline-block;
+    /* width:40px; */
+    /* height:40px; */
+    width: 9vmin;
+    height: 9vmin;
+    border-radius:50%;
+    vertical-align: middle;
+    background:black;
+}
+
+.stone_white{
+    display: inline-block;
+    /* width:40px; */
+    /* height:40px; */
+    width: 9vmin;
+    height: 9vmin;
+    border-radius:50%;
+    vertical-align: middle;
+    background:white;
+}
