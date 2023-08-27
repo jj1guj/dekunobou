@@ -14,5 +14,10 @@ WORKDIR /tmp
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt \
     && rm -rf requirements.txt
+COPY web/api/requirements.txt /tmp
+WORKDIR /tmp
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && rm -rf requirements.txt
 
 WORKDIR /root
