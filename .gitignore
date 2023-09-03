@@ -37,4 +37,7 @@ build*/**
 *.png
 *.mp4
 *.pyc
-*.txt
+# *.txt
+
+# web resources
+**heroku_env

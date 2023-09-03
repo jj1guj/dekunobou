@@ -1,0 +1,125 @@
+div#paging
+{
+    text-align: center;
+    /* スクロールに対してページングボックスの位置を固定 */
+    position: fixed;
+    /* 位置を指定 */
+    bottom: 0;
+    right:45%;
+}
+
+div#pagingbox{
+    background: #FFF;
+}
+
+th{
+    /* ヘッダ背景塗りつぶし */
+    background: #008000;
+}
+
+@media (orientation: portrait) {
+    th,td {
+            /* 枠線を1本線指定 */
+            border: solid 1px;
+            width: 11vw;
+            height: 11vw;
+            text-align: center;
+            vertical-align: middle;
+        }
+    .can_put {
+        display: inline-block;
+        /* width:20px; */
+        /* height:20px; */
+        width: 4.4vw;
+        height: 4.4vw;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: gray;
+    }
+
+    .stone_black {
+        display: inline-block;
+        width: 9vw;
+        height: 9vw;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: black;
+    }
+
+    .stone_white {
+        display: inline-block;
+        width: 9vw;
+        height: 9vw;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: white;
+    }
+}
+
+@media (orientation: landscape) {
+
+    th,td {
+        /* 枠線を1本線指定 */
+        border: solid 1px;
+        width: 7vh;
+        height: 7vh;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .can_put {
+        display: inline-block;
+        width: 2.4vh;
+        height: 2.4vh;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: gray;
+    }
+
+    .stone_black {
+        display: inline-block;
+        width: 5vh;
+        height: 5vh;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: black;
+    }
+
+    .stone_white {
+        display: inline-block;
+        width: 5vh;
+        height: 5vh;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: white;
+    }
+}
+
+table{
+    /* 枠線を1本線指定 */
+    border: solid 3px;
+    border-collapse:  collapse;
+    white-space: nowrap;
+    background: #008000;
+}
+
+button{
+    text-align: center;
+}
+
+footer{
+    position: fixed;
+    width: 100%;
+    background-color: #C0C0C0;
+    padding: 15px 0;
+    bottom: 0; /*下に固定*/
+}
+
+.game_start{
+    width: 150px;
+    height: 50px;
+    padding: 10px;
+    font-size: 120%;
+    background-color: #008800;
+    color:#FFF;
+}
