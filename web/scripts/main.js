@@ -207,7 +207,7 @@ async function get_func(url,board,turn){
     }).then(response=>response.json());
 }
 
-const url="https://dekunobou-api.herokuapp.com/";
+const url="http://localhost:5000/";
 
 var board=new Board();
 game_started=false;
