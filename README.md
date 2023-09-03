@@ -51,6 +51,18 @@ ulimit -s unlimited
     --depth <integer>          - 探索深さ. default: 9
 ```
 
+# ブラウザでの遊び方
+
+実行バイナリを`web/api`直下にコピーして以下のコマンドを実行してください.
+
+```
+cd web/api
+pip3 install -r requirements.txt
+python3 app.py
+```
+
+ブラウザで`web/index.html`を開くと遊ぶことができます.
+
 # バグ報告など
 
 バグ等ありましたら issue までよろしくおねがいします.
@@ -106,6 +118,18 @@ ulimit -s unlimited
     -t <0 or 1>                - [Required] Current turn. 0 is Black, 1 is White.
     --depth <integer>          - Depth to search. default: 9
 ```
+
+# How to play in the browser
+
+Copy the executable binary directly under `web/api` and execute the following command.
+
+```
+cd web/api
+pip3 install -r requirements.txt
+python3 app.py
+```
+
+You can play by opening `web/index.html` in your browser.
 
 # Bug report and etc.
 
