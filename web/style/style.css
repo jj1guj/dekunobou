@@ -17,13 +17,82 @@ th{
     background: #008000;
 }
 
-th,td {
-    /* 枠線を1本線指定 */
-    border: solid 1px;
-    width: 11vmin;
-    height: 11vmin;
-    text-align: center;
-    vertical-align: middle;
+@media (orientation: portrait) {
+    th,td {
+            /* 枠線を1本線指定 */
+            border: solid 1px;
+            width: 11vw;
+            height: 11vw;
+            text-align: center;
+            vertical-align: middle;
+        }
+    .can_put {
+        display: inline-block;
+        /* width:20px; */
+        /* height:20px; */
+        width: 4.4vw;
+        height: 4.4vw;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: gray;
+    }
+
+    .stone_black {
+        display: inline-block;
+        width: 9vw;
+        height: 9vw;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: black;
+    }
+
+    .stone_white {
+        display: inline-block;
+        width: 9vw;
+        height: 9vw;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: white;
+    }
+}
+
+@media (orientation: landscape) {
+
+    th,td {
+        /* 枠線を1本線指定 */
+        border: solid 1px;
+        width: 7vh;
+        height: 7vh;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .can_put {
+        display: inline-block;
+        width: 2.4vh;
+        height: 2.4vh;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: gray;
+    }
+
+    .stone_black {
+        display: inline-block;
+        width: 5vh;
+        height: 5vh;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: black;
+    }
+
+    .stone_white {
+        display: inline-block;
+        width: 5vh;
+        height: 5vh;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: white;
+    }
 }
 
 table{
@@ -32,6 +101,10 @@ table{
     border-collapse:  collapse;
     white-space: nowrap;
     background: #008000;
+}
+
+button{
+    text-align: center;
 }
 
 footer{
@@ -49,37 +122,4 @@ footer{
     font-size: 120%;
     background-color: #008800;
     color:#FFF;
-}
-
-.can_put{
-    display: inline-block;
-    /* width:20px; */
-    /* height:20px; */
-    width: 4.4vmin;
-    height: 4.4vmin;
-    border-radius:50%;
-    vertical-align: middle;
-    background:gray;
-}
-
-.stone_black{
-    display: inline-block;
-    /* width:40px; */
-    /* height:40px; */
-    width: 9vmin;
-    height: 9vmin;
-    border-radius:50%;
-    vertical-align: middle;
-    background:black;
-}
-
-.stone_white{
-    display: inline-block;
-    /* width:40px; */
-    /* height:40px; */
-    width: 9vmin;
-    height: 9vmin;
-    border-radius:50%;
-    vertical-align: middle;
-    background:white;
 }
