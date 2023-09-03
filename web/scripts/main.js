@@ -359,5 +359,5 @@ function tweet(){
     }
     console.log(dataText);
     window.open("https://twitter.com/share?text="
-                +dataText+"&url=https://jj1guj.net/dekunobou-web/"+"&hashtags=dekunobou");
+                +dataText+"&url=https://dekunobou.jj1guj.net/"+"&hashtags=dekunobou");
 }
