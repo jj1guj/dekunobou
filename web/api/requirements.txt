@@ -6,8 +6,3 @@ Jinja2==3.0.1
 MarkupSafe==2.0.1
 Werkzeug==2.0.1
 flask_cors
-opencv-python
-matplotlib
-numpy
-tqdm
-pyyaml
