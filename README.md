@@ -56,9 +56,8 @@ ulimit -s unlimited
 実行バイナリを`web/api`直下にコピーして以下のコマンドを実行してください.
 
 ```
-cd web/api
 pip3 install -r requirements.txt
-python3 app.py
+python3 web/api/app.py
 ```
 
 ブラウザで`web/index.html`を開くと遊ぶことができます.
@@ -124,9 +123,8 @@ ulimit -s unlimited
 Copy the executable binary directly under `web/api` and execute the following command.
 
 ```
-cd web/api
 pip3 install -r requirements.txt
-python3 app.py
+python3 web/api/app.py
 ```
 
 You can play by opening `web/index.html` in your browser.
