@@ -207,7 +207,7 @@ async function get_func(url,board,turn){
     }).then(response=>response.json());
 }
 
-const url="http://localhost:5000/";
+const url="https://dekunobou-api.herokuapp.com/";
 
 var board=new Board();
 game_started=false;
@@ -346,14 +346,16 @@ if(board.turn!=human_turn){
 //ツイート
 function tweet(){
     var dataText;
+    const point_human = board.point[human_turn % 2];
+    const point_ai = board.point[(human_turn + 1) % 2];
     if(is_gameover(board)==0){
         dataText ="でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
     }else if(is_gameover(board)==3){
-        dataText = "でくのぼうに"+board.point[0]+"対"+board.point[1]+"で引き分けました… でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
+        dataText = "でくのぼうに"+"対"+point_ai+"で引き分けました… でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
     }else if(is_gameover(board)==human_turn+1){
-        dataText = "でくのぼうに"+board.point[0]+"対"+board.point[1]+"で勝ちました!! でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
+        dataText = "でくのぼうに"+point_human+"対"+point_ai+"で勝ちました!! でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
     }else{
-        dataText = "でくのぼうに"+board.point[0]+"対"+board.point[1]+"で負けました… でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
+        dataText = "でくのぼうに"+point_human+"対"+point_ai+"で負けました… でくのぼう -遺伝的アルゴリズムを使ったオセロAI-"
     }
     console.log(dataText);
     window.open("https://twitter.com/share?text="
