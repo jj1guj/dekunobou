@@ -15,9 +15,9 @@ def put():
     turn = request.form["turn"]
 
     # バイナリに実行権限を与える
-    subprocess.run(["chmod", "u+x", "dekunobou"])
+    subprocess.run(["chmod", "u+x", "web/api/dekunobou"])
 
-    cmd = ["./dekunobou", "--mode", "web", "-b", board, "-t", turn]
+    cmd = ["web/api/dekunobou", "--mode", "web", "-b", board, "-t", turn]
     cp = subprocess.run(cmd, encoding="utf-8", stdout=subprocess.PIPE)
     return str(int(cp.stdout))
 
