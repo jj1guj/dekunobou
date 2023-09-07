@@ -147,6 +147,12 @@ class Board{
     }
 }
 
+function board_to_str(board) {
+    var board_str=""
+    for(var i=0;i<64;++i)board_str+=String(board.board[Math.floor(i/8)][i%8]);
+    return board_str;
+}
+
 //終局かどうか判定
 function is_gameover(board){
     //0なら対局中, 1なら先手勝ち, 2なら後手勝ち, 3なら引き分け
@@ -220,9 +226,7 @@ function game_start(){
         }else{
             // 人間が後手
             human_turn=true;
-            board_str="";
-            for(var i=0;i<64;++i)board_str+=String(board.board[Math.floor(i/8)][i%8]);
-            get_func(url+"put",board_str,String(Number(board.turn))).then((response)=>{
+            get_func(url+"put", board_to_str(board),String(Number(board.turn))).then((response)=>{
                 const n=Number(response);
                 move(n);
             })
@@ -303,9 +307,7 @@ function move(id){
     //エンジンに打たせる
     if(board.turn!=human_turn/*false*/){
         //console.log("engine");
-        board_str=""
-        for(var i=0;i<64;++i)board_str+=String(board.board[Math.floor(i/8)][i%8]);
-        get_func(url+"put",board_str,String(Number(board.turn))).then((response)=>{
+        get_func(url+"put", board_to_str(board),String(Number(board.turn))).then((response)=>{
             const n=Number(response);
             move(n);
         })
