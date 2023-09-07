@@ -213,7 +213,7 @@ async function get_func(url,board,turn){
     }).then(response=>response.json());
 }
 
-const url="http://localhost:5000/";
+const url="https://dekunobou-api.herokuapp.com/";
 
 var board=new Board();
 game_started=false;
@@ -363,4 +363,54 @@ function tweet(){
     window.open("https://twitter.com/share?text="
                 +dataText+"&url=https://dekunobou.jj1guj.net/"+"&hashtags=dekunobou");
 }
+
+// MFMを使用して終局図を添付する
+function make_end_game_string() {
+    const board_str = board_to_str(board);
+    const black = "$[fg.color=000000 ●] "
+    const white = "$[fg.color=FFFFFF ●] "
+    const empty = "　 "
+    var end_game_string = "$[x2 $[bg.color=14962e "
+
+    for(var i = 0; i < 64; ++i) {
+        if (board_str[i] == "1") {
+            end_game_string += black
+        } else if (board_str[i] == "2") {
+            end_game_string += white
+        } else {
+            end_game_string += empty
+        }
+        if (i % 8 == 7 && i < 63) end_game_string +="\n"
+    }
+
+    end_game_string += "]]"
+    return end_game_string
+}
+
+// Misskeyにノート
+function misskey_note() {
+    var dataText = ""
+    const point_human = board.point[human_turn % 2];
+    const point_ai = board.point[(human_turn + 1) % 2];
+    if (is_gameover(board) > 0) {
+        if(is_gameover(board)==3){
+            dataText = "でくのぼうに"+"対"+point_ai+"で引き分けました… "
+        }else if(is_gameover(board)==human_turn+1){
+            dataText = "でくのぼうに"+point_human+"対"+point_ai+"で勝ちました!! "
+        }else{
+            dataText = "でくのぼうに"+point_human+"対"+point_ai+"で負けました… "
+        }
+
+        dataText += "でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou\n\n\n"
+        dataText += "終局図\n"
+        if (human_turn) dataText += "先手: AI, 後手: 人間\n"
+        else dataText += "先手: AI, 後手: 人間\n"
+
+        // 終局していれば終局図を添付する
+        dataText += make_end_game_string()
+    } else {
+        dataText = " でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou"
+    }
+
+    return dataText
 }
