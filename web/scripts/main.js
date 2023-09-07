@@ -406,7 +406,6 @@ function misskey_note() {
 
         if (human_turn) dataText += "先手: AI, 後手: 人間\n"
         else dataText += "先手: 人間, 後手: AI\n"
-
         // 終局していれば終局図を添付する
         dataText += make_end_game_string()
     } else {
