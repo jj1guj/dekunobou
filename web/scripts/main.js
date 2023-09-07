@@ -403,9 +403,9 @@ function misskey_note() {
 
         dataText += "でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou\n\n\n"
         dataText += "終局図\n"
-        if (human_turn) dataText += "先手: AI, 後手: 人間\n"
-        else dataText += "先手: AI, 後手: 人間\n"
 
+        if (human_turn) dataText += "先手: AI, 後手: 人間\n"
+        else dataText += "先手: 人間, 後手: AI\n"
         // 終局していれば終局図を添付する
         dataText += make_end_game_string()
     } else {
