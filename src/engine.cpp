@@ -45,7 +45,7 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
     // 終局
     if (moves2.size() == 0) {
       ++nodes;
-      return board.point[turn_p];
+      return board.point[turn_p] - board.point[!turn_p];
     }
     return alphabeta(board, param, depth - 1, alpha, beta);
     moves = moves2;
@@ -124,7 +124,7 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
   if (max_score == -inf) {
     if (passed) {
       ++nodes;
-      return board.point[turn_p];
+      return board.point[board.turn] - board.point[!board.turn];
     }
     board.push(-1); // 手番を変えて探索する
     return -nega_alpha(board, param, depth, true, -beta, -alpha);
@@ -217,7 +217,7 @@ int go(Board board, float param[param_size], const Option &option) {
         alpha = eval_ref;
       if (option.debug) {
         nodes_total += nodes;
-        std::cout << priority[i] + 1 << ": " << eval_ref << " " << nodes / 1000
+        std::cout << priority[i] + 1 << "(" << moves[priority[i]] << ")" << ": " << eval_ref << " " << nodes / 1000
                   << "k" << std::endl;
       }
     } else {
