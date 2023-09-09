@@ -217,7 +217,7 @@ int go(Board board, float param[param_size], const Option &option) {
         alpha = eval_ref;
       if (option.debug) {
         nodes_total += nodes;
-        std::cout << priority[i] + 1 << ": " << eval_ref << " " << nodes / 1000
+        std::cout << priority[i] + 1 << "(" << moves[priority[i]] << ")" << ": " << eval_ref << " " << nodes / 1000
                   << "k" << std::endl;
       }
     } else {
