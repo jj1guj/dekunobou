@@ -124,7 +124,7 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
   if (max_score == -inf) {
     if (passed) {
       ++nodes;
-      return board.point[turn_p];
+      return board.point[board.turn] - board.point[!board.turn];
     }
     board.push(-1); // 手番を変えて探索する
     return -nega_alpha(board, param, depth, true, -beta, -alpha);
