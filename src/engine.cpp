@@ -45,7 +45,7 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
     // 終局
     if (moves2.size() == 0) {
       ++nodes;
-      return board.point[turn_p];
+      return board.point[turn_p] - board.point[!turn_p];
     }
     return alphabeta(board, param, depth - 1, alpha, beta);
     moves = moves2;
