@@ -387,30 +387,69 @@ function make_end_game_string() {
     return end_game_string
 }
 
-// Misskeyにノート
-function misskey_note() {
-    var dataText = ""
-    const point_human = board.point[human_turn % 2];
-    const point_ai = board.point[(human_turn + 1) % 2];
-    if (is_gameover(board) > 0) {
-        if(is_gameover(board)==3){
-            dataText = "でくのぼうに"+"対"+point_ai+"で引き分けました… "
-        }else if(is_gameover(board)==human_turn+1){
-            dataText = "でくのぼうに"+point_human+"対"+point_ai+"で勝ちました!! "
-        }else{
-            dataText = "でくのぼうに"+point_human+"対"+point_ai+"で負けました… "
+// 画像保存
+function exportBoardAsImage(board) {
+    // Canvas要素の作成
+    const canvas = document.createElement('canvas');
+    canvas.width = 400; // 8 x 50px のセル
+    canvas.height = 400;
+    const context = canvas.getContext('2d');
+
+    // 各セルのサイズ
+    const cellSize = 50;
+    
+    // 盤面をループして描画
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            const x = j * cellSize + cellSize / 2; // セルの中心のx座標
+            const y = i * cellSize + cellSize / 2; // セルの中心のy座標
+
+            if (board.board[i][j] == 1) {
+                context.fillStyle = 'black';
+                context.beginPath();
+                context.arc(x, y, cellSize / 2 - 5, 0, Math.PI * 2);
+                context.fill();
+            } else if (board.board[i][j] == 2) {
+                context.fillStyle = 'white';
+                context.beginPath();
+                context.arc(x, y, cellSize / 2 - 5, 0, Math.PI * 2);
+                context.fill();
+            }
         }
-
-        dataText += "でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou\n\n\n"
-        dataText += "終局図\n"
-
-        if (human_turn) dataText += "先手: AI, 後手: 人間\n"
-        else dataText += "先手: 人間, 後手: AI\n"
-        // 終局していれば終局図を添付する
-        dataText += make_end_game_string()
-    } else {
-        dataText = " でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou"
     }
 
-    return dataText
+    // 画像としてダウンロードするリンクを作成
+    const downloadLink = document.createElement('a');
+    downloadLink.href = canvas.toDataURL('image/png');
+    downloadLink.download = 'board.png';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+// Misskeyにノート
+function misskey_note() {
+    var dataText = "";
+    const point_human = board.point[human_turn % 2];
+    const point_ai = board.point[(human_turn + 1) % 2];
+
+    if (is_gameover(board) > 0) {
+        if (is_gameover(board) == 3) {
+            dataText = "でくのぼうに" + "対" + point_ai + "で引き分けました… ";
+        } else if (is_gameover(board) == human_turn + 1) {
+            dataText = "でくのぼうに" + point_human + "対" + point_ai + "で勝ちました!! ";
+        } else {
+            dataText = "でくのぼうに" + point_human + "対" + point_ai + "で負けました… ";
+        }
+
+        dataText += "でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou\n\n";
+        
+        // 終局していれば画像をダウンロードする指示を出す
+        dataText += "以下のリンクから盤面の画像をダウンロードし、Misskeyの投稿に添付してください。\n";
+        exportBoardAsImage(board);  // 盤面の画像をエクスポートする関数を呼び出す
+    } else {
+        dataText = " でくのぼう -遺伝的アルゴリズムを使ったオセロAI- \nhttps://dekunobou.jj1guj.net\n#dekunobou";
+    }
+
+    return dataText;
 }
