@@ -397,12 +397,20 @@ function exportBoardAsImage(board) {
 
     // 各セルのサイズ
     const cellSize = 50;
-    
+
+    // 背景を緑色に設定
+    context.fillStyle = '#14962e'; // 緑色
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
     // 盤面をループして描画
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             const x = j * cellSize + cellSize / 2; // セルの中心のx座標
             const y = i * cellSize + cellSize / 2; // セルの中心のy座標
+
+            // セルの枠線を描画
+            context.strokeStyle = 'black';
+            context.strokeRect(j * cellSize, i * cellSize, cellSize, cellSize);
 
             if (board.board[i][j] == 1) {
                 context.fillStyle = 'black';
