@@ -87,7 +87,7 @@ std::vector<Board> load_xot_file(std::string filename) {
     for (int i = 0; i < opening.size(); i += 2) {
       if (opening[i] == '\n')
         break;
-      int id_int = 8 * (opening[i] - 'A') + opening[i - 1] - '0';
+      int id_int = 8 * (opening[i + 1] - '1') + opening[i] - 'a';
       board.push(id_int);
     }
     openings.push_back(board);
