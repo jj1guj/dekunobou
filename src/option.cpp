@@ -70,10 +70,10 @@ void print_help(const option_status_t status) {
       std::cout << "    --mutation_start <integer> - Time to start mutation "
                    "(hour). default: 0"
                 << std::endl;
-      std::cout
-          << "    --mutation_prob <number>   - Probability of mutation (0 ~ 1). "
-             "default: 1e-3"
-          << std::endl;
+      std::cout << "    --mutation_prob <number>   - Probability of mutation "
+                   "(0 ~ 1). "
+                   "default: 1e-3"
+                << std::endl;
       std::cout
           << "    --time_limit <integer>     - Time to perform the genetic "
              "algorithm (hour). default: 36"
@@ -214,7 +214,7 @@ option_status_t parse_cmd(int argc, char** argv, Option& option) {
             return option_status;
         } else if (long_option_name == "out_path") {
           option.option_ga.out_path = opt_arg;
-        } else if (long_option_name == "xot_file") {
+        } else if (long_option_name == "xot_path") {
           option.option_ga.xot_path = opt_arg;
         } else if (long_option_name == "eval") {
           option.option_web.eval = opt_arg;
