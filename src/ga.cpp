@@ -28,6 +28,7 @@ std::string eval_output_path =
     "eval.txt"; // 最終的に出力する評価関数のファイル名
 std::string data_path = "data"; // 遺伝子すべてを保存するディレクトリのパス
 int out_interval = 10; // 遺伝子すべてを出力する間隔
+std::string xot_path; // 初期局面集のパス
 
 int R3[param_size]; // 3進法表記で反転させた値を10進法表記で格納する
 constexpr int pow3[8] = {1, 3, 9, 27, 81, 243, 729, 2187};
@@ -129,7 +130,7 @@ void out_params(std::string path) {
 
 // 交叉
 void intersection(float p1[param_size], float p2[param_size], int cur1,
-                  int cur2, const Option &option) {
+                  int cur2, std::vector<Board> &openings, const Option &option) {
 
   int win_val[2];
   // p1: 親1, p2: 親2
@@ -206,17 +207,18 @@ void intersection(float p1[param_size], float p2[param_size], int cur1,
     win_val[0] = 0;
     win_val[1] = 0;
     for (int b = 0; b < match_genetic; ++b) {
+      Board opening_board = openings[rnd() % openings.size()];
       if (win_impossible[b] <= win_val[0] && win_val[0] <= thresh) {
-        if (play_engine(p1, c1, option) == 1)
+        if (play_engine(p1, c1, opening_board, option) == 1)
           ++win_val[0]; // 親1が先手, 子1が後手
-        if (play_engine(c1, p1, option) == 0)
+        if (play_engine(c1, p1, opening_board, option) == 0)
           ++win_val[0]; // 子1が先手, 親1が後手
       }
 
       if (win_impossible[b] <= win_val[1] && win_val[1] <= thresh) {
-        if (play_engine(p2, c2, option) == 1)
+        if (play_engine(p2, c2, opening_board, option) == 1)
           ++win_val[1]; // 親1が先手, 子1が後手
-        if (play_engine(c2, p2, option) == 0)
+        if (play_engine(c2, p2, opening_board, option) == 0)
           ++win_val[1]; // 子1が先手, 親1が後手
       }
     }
@@ -246,6 +248,7 @@ void ga(const Option &option) {
   timelimit = option.option_ga.time_limit * 3600;
   data_path = option.option_ga.out_path;
   threads_num = option.option_ga.thread;
+  xot_path = option.option_ga.xot_path;
 
   // 変数の初期化
   init_R3();
@@ -264,7 +267,7 @@ void ga(const Option &option) {
   }
 
   // 初期局面集のロード
-  std::vector<Board> openings = load_xot_file(option.option_ga.xot_path);
+  std::vector<Board> openings = load_xot_file(xot_path);
 
   // 並列化の準備
   int concurrency = std::min(omp_get_max_threads(), N / 2);
@@ -309,7 +312,7 @@ void ga(const Option &option) {
 #pragma omp parallel for num_threads(concurrency)
     for (int i = 0; i < concurrency; ++i) {
       intersection(G[2 * i], G[2 * i + 1], cursors[2 * i], cursors[2 * i + 1],
-                   option);
+                   openings, option);
     }
 
     // 今の遺伝子をファイルに出力
@@ -354,13 +357,14 @@ void ga(const Option &option) {
     std::cout << i << std::endl;
     for (int j = i + 1; j < N; ++j) {
       for (int k = 0; k < match_times; ++k) {
-        winner = play_engine(params[i], params[j], option);
+        Board opening_board = openings[rnd() % openings.size()];
+        winner = play_engine(params[i], params[j], opening_board, option);
         if (winner == 0)
           ++win_count[i];
         if (winner == 1)
           ++win_count[j];
 
-        winner = play_engine(params[j], params[i], option);
+        winner = play_engine(params[j], params[i], opening_board, option);
         if (winner == 0)
           ++win_count[j];
         if (winner == 1)

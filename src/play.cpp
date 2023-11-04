@@ -2,8 +2,7 @@
 
 // エンジン同士の対局
 int play_engine(float param_black[param_size], float param_white[param_size],
-                const Option &option) {
-  Board board;
+                Board &board, const Option &option) {
   int pass_count = 0;
   int move;
   while (true) {
