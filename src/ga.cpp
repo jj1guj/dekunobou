@@ -98,8 +98,6 @@ std::vector<Board> load_xot_file(std::string filename) {
 // 遺伝的アルゴリズムで使用したパラメータすべてをバイナリファイルから読み込む
 int load_params(std::string filename, float params[N][param_size]) {
   std::ifstream inputs(filename, std::ios::in | std::ios::binary);
-  std::string s;
-  int i = 0, j;
   if (inputs.fail()) {
     std::cout << "Failed to open file\n";
     return -1;
