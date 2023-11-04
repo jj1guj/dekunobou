@@ -71,6 +71,30 @@ void init_param(float params[param_size]) {
   }
 }
 
+// 初期局面集を読み込む
+std::vector<Board> load_xot_file(std::string filename) {
+  std::vector<Board> openings;
+  std::string opening;
+  std::ifstream inputs(filename, std::ios::in | std::ios::binary);
+  if (inputs.fail()) {
+    std::cout << "Failed to open file" << std::endl;
+    Board board;
+    return {board};
+  }
+
+  while (getline(inputs, opening)) {
+    Board board;
+    for (int i = 0; i < opening.size(); i += 2) {
+      if (opening[i] == '\n')
+        break;
+      int id_int = 8 * (opening[i] - 'A') + opening[i - 1] - '0';
+      board.push(id_int);
+    }
+    openings.push_back(board);
+  }
+  return openings;
+}
+
 // 遺伝的アルゴリズムで使用したパラメータすべてをバイナリファイルから読み込む
 int load_params(std::string filename, float params[N][param_size]) {
   std::ifstream inputs(filename, std::ios::in | std::ios::binary);
@@ -240,6 +264,9 @@ void ga(const Option &option) {
   for (int i = 0; i < match_genetic / 2; ++i) {
     win_impossible[i] = thresh + 2 * (i - match_genetic);
   }
+
+  // 初期局面集のロード
+  std::vector<Board> openings = load_xot_file(option.option_ga.xot_path);
 
   // 並列化の準備
   int concurrency = std::min(omp_get_max_threads(), N / 2);
