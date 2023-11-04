@@ -18,6 +18,7 @@ static struct option long_options[] = {
     {"time_limit", required_argument, NULL, 0},
     {"thread", required_argument, NULL, 0},
     {"out_path", required_argument, NULL, 0},
+    {"xot_path", required_argument, NULL, 0},
     {"board", required_argument, NULL, 'b'},
     {"turn", required_argument, NULL, 't'},
     {"depth", required_argument, NULL, 0},
@@ -55,6 +56,7 @@ struct Option_ga {
   int time_limit = 36;
   int thread = omp_get_max_threads();
   std::string out_path = "";
+  std::string xot_path = "";
 };
 
 struct Option_web {
