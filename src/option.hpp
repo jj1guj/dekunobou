@@ -24,7 +24,7 @@ static struct option long_options[] = {
     {"eval", required_argument, NULL, 'e'},
     {.name="perfect_search_depth", required_argument, NULL, 0},
     {"debug", no_argument, NULL, 'd'},
-    {"help", no_argument, NULL, 'h'},};
+    {"help", no_argument, NULL, 'h'}};
 
 enum class option_status_t {
   success,
