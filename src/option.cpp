@@ -87,6 +87,7 @@ void print_help(const option_status_t status) {
               << std::endl;
     std::cout << "    --depth <integer>          - Depth to search. default: 9"
               << std::endl;
+    std::cout << "    --perfect_search_depth <integer>  - Depth to perfect search. default: 13" << std::endl;
     break;
 
   default:
@@ -208,7 +209,11 @@ option_status_t parse_cmd(int argc, char **argv, Option &option) {
         option.option_ga.out_path = opt_arg;
       } else if (long_option_name == "eval") {
         option.option_web.eval = opt_arg;
-      } else if (long_option_name == "depth") {
+      } else if (long_option_name == "perfect_search_depth") {
+        option_status = to_int(opt_arg, option.option_web.perfect_search_depth);
+        if (option_status != option_status_t::success)
+          return option_status;
+      }  else if (long_option_name == "depth") {
         option_status = to_int(opt_arg, option.option_web.depth);
         if (option_status != option_status_t::success)
           return option_status;
