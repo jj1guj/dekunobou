@@ -10,6 +10,7 @@ info:
     url: https://github.com/jj1guj/dekunobou?tab=MIT-1-ov-file#readme
 servers:
   - url: https://dekunobou-api.herokuapp.com/
+    description: Product server
 paths:
   /:
     get:
