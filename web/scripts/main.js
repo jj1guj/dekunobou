@@ -195,22 +195,46 @@ function LegalMoveList(board){
 //APIとの通信
 var movebyAI;
 
-async function get_func(url,board,turn){
-    let formData=new FormData();
-    //for Debug
-    //formData.append('board',"0000000000000000000000000002100000012000000000000000000000000000");
-    //formData.append('turn',"0")
-    formData.append('board',board);
-    formData.append('turn',turn);
-    console.log(formData);
+async function get_func(url ,board, turn, depth=7, perfect_search_depth=13) {
     
-    //for Debug
-    console.log(board);
-    console.log(turn);
-    return  fetch(url,{
-        method:"PUT",
-        body:formData,
-    }).then(response=>response.json());
+    // リクエストボディ
+    const requestBody = {
+        board: board,
+        turn: turn,
+        depth: depth,
+        perfect_search_depth: perfect_search_depth
+    };
+    
+    try {
+        // PUTリクエストを送信
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        // レスポンスがOKか確認
+        if (response.ok) {
+            const responseData = await response.json();
+            
+            // move プロパティの値を取り出して整数に変換
+            if (responseData.hasOwnProperty('move')) {
+                const move = parseInt(responseData.move, 10);
+                return move; // move を返す
+            } else {
+                console.error('Response does not contain "move" property.');
+                return null; // move プロパティがない場合は null を返す
+            }
+        } else {
+            console.error('Error:', response.status, response.statusText);
+            return null; // エラー時も null を返す
+        }
+    } catch (error) {
+        console.error('Network Error:', error);
+        return null; // ネットワークエラー時も null を返す
+    }
 }
 
 const url="https://dekunobou-api.herokuapp.com/";
@@ -226,8 +250,7 @@ function game_start(){
         }else{
             // 人間が後手
             human_turn=true;
-            get_func(url+"put", board_to_str(board),String(Number(board.turn))).then((response)=>{
-                const n=Number(response);
+            get_func(url + "put", board_to_str(board), Number(board.turn)).then(n => {
                 move(n);
             })
         }
@@ -307,8 +330,7 @@ function move(id){
     //エンジンに打たせる
     if(board.turn!=human_turn/*false*/){
         //console.log("engine");
-        get_func(url+"put", board_to_str(board),String(Number(board.turn))).then((response)=>{
-            const n=Number(response);
+        get_func(url + "put", board_to_str(board), Number(board.turn)).then(n => {
             move(n);
         })
     }
