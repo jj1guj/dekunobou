@@ -22,6 +22,7 @@ static struct option long_options[] = {
     {"turn", required_argument, NULL, 't'},
     {"depth", required_argument, NULL, 0},
     {"eval", required_argument, NULL, 'e'},
+    {.name="perfect_search_depth", required_argument, NULL, 0},
     {"debug", no_argument, NULL, 'd'},
     {"help", no_argument, NULL, 'h'}};
 
@@ -62,6 +63,7 @@ struct Option_web {
   bool turn;
   bool is_turn_set = false;
   int depth = 9;
+  int perfect_search_depth = 13;
   std::string eval = "";
 };
 

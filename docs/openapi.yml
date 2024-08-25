@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: "API"
+  version: "1.0.0"
+  contact:
+    name: JJ1GUJ
+    url: https://github.com/jj1guj
+  license:
+    name: MIT license
+    url: https://github.com/jj1guj/dekunobou?tab=MIT-1-ov-file#readme
+servers:
+  - url: https://dekunobou-api.herokuapp.com/
+    description: Product server
+paths:
+  /:
+    get:
+      summary: 疎通確認用. ダミーの文字列が返ってくる
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: I'm dekunobou, computer othello program!
+  /put:
+    put:
+      description: AIの指し手を取得する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Engine Option'
+            example:
+              board: "0000000000000000000000000001200000021000000000000000000000000000"
+              turn: 0
+              depth: 7
+              perfect_search_depth: 13
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  move:
+                    type: integer
+                    description: 指し手を表す整数. 8で割った商が行番号, 余りが列番号に相当する.
+              example:
+                board: 19
+components:
+  schemas:
+    Engine Option:
+      type: object
+      required:
+        - board
+        - turn
+      properties:
+        board:
+          type: string
+          description: 盤面を表す文字列. 何も置かれていない場合は0, 黒石なら1, 白石なら2. 盤面左上隅から右下隅にかけて順にエンコードする. エンコードするコードはweb/scripts/main.jsを参考にすること.
+        turn:
+          type: integer
+          description: 手番. 先手番の場合0, 後手番の場合1.
+        depth:
+          type: integer
+          description: 探索深さ.
+        perfect_search_depth:
+          type: integer
+          description: 終盤の完全読みを行う際の探索深さ.

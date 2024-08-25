@@ -209,7 +209,7 @@ int go(Board board, float param[param_size], const Option &option) {
     if (option.mode != Mode::ga) {
       // 終盤20手で完全読み
       nodes = 0;
-      if (board.point[0] + board.point[1] >= 60 - perfect_search)
+      if (board.point[0] + board.point[1] >= 60 - option.option_web.perfect_search_depth)
         eval_ref = -nega_alpha(board_ref, param, 60, false, -beta, -alpha);
       else
         eval_ref = -nega_alpha(board_ref, param, option.option_web.depth - 1, false, -beta, -alpha);
@@ -230,7 +230,7 @@ int go(Board board, float param[param_size], const Option &option) {
       ++bestmoves_num;
       val = eval_ref;
     } else if (eval_ref == val &&
-               board.point[0] + board.point[1] < 60 - perfect_search) {
+               board.point[0] + board.point[1] < 60 - option.option_web.perfect_search_depth) {
       BestMoves[bestmoves_num] = moves[priority[i]];
       ++bestmoves_num;
     }
