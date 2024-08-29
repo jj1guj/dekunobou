@@ -1,4 +1,7 @@
 #include "engine.hpp"
+#include "legalmovelist.hpp"
+#include <chrono>
+
 long long nodes;
 long long nodes_total = 0;
 bool turn_p;
@@ -133,6 +136,7 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
 }
 
 int go(Board board, float param[param_size], const Option &option) {
+  std::chrono::system_clock::time_point start, end;
   turn_p = board.turn;
 
   float val = -inf;
@@ -158,6 +162,10 @@ int go(Board board, float param[param_size], const Option &option) {
   int priority[64];
   bool selected[64];
   std::vector<float> evals_sort(moves.size());
+
+  if (option.debug) {
+    start = std::chrono::system_clock::now();
+  }
 
   if (option.mode != Mode::ga) {
     // 5手読みの評価値を算出
@@ -238,8 +246,13 @@ int go(Board board, float param[param_size], const Option &option) {
 
   if (option.debug) {
     // for debug
+    end = std::chrono::system_clock::now();
+    double elapsed =
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+            .count();
     std::cout << "eval: " << val << std::endl;
     std::cout << "nodes: " << nodes_total / 1000 << "k" << std::endl;
+    std::cout << "time: " << elapsed << "[msec]" << std::endl;
   }
 
   int tmp = rnd_select() % bestmoves_num;
