@@ -27,7 +27,7 @@ void ZobristHash::init() {
   }
 }
 
-unsigned long long ZobristHash::hash(Board board) {
+unsigned long long ZobristHash::hash(Board &board) {
   uint16_t *board_player = reinterpret_cast<uint16_t *>(&board.board_player);
   uint16_t *board_opponent =
       reinterpret_cast<uint16_t *>(&board.board_opponent);
@@ -40,7 +40,7 @@ unsigned long long ZobristHash::hash(Board board) {
          hash_opponent[3][board_opponent[3]] ^ board.turn;
 }
 
-unsigned long long ZobristHash::hash_pass(unsigned long long hash) {
+unsigned long long ZobristHash::hash_pass(unsigned long long &hash) {
   // パスの際は手番情報を反転すれば良いので1とのXORを取る
   return hash ^ UINT64_C(1);
 };

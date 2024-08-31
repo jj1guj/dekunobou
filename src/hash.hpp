@@ -5,8 +5,8 @@
 class ZobristHash {
 public:
   ZobristHash() { init(); }
-  unsigned long long hash(Board board);
-  unsigned long long hash_pass(unsigned long long hash);
+  unsigned long long hash(Board &board);
+  unsigned long long hash_pass(unsigned long long &hash);
 
 private:
   void init();
