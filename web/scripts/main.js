@@ -416,7 +416,7 @@ function misskey_note() {
     const point_ai = board.point[(human_turn + 1) % 2];
     if (is_gameover(board) > 0) {
         if(is_gameover(board)==3){
-            dataText = "でくのぼうに"+"対"+point_ai+"で引き分けました… "
+            dataText = "でくのぼうに"+point_human+"対"+point_ai+"で引き分けました… "
         }else if(is_gameover(board)==human_turn+1){
             dataText = "でくのぼうに"+point_human+"対"+point_ai+"で勝ちました!! "
         }else{
