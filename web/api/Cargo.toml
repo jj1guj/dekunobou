@@ -5,3 +5,6 @@ edition = "2021"
 
 [dependencies]
 dekunobou_lib = { path = "lib/dekunobou_lib" }
+actix-web = "4"
+actix-cors = "0.7"
+serde = { version = "1.0", features = ["derive"]}
