@@ -4,6 +4,7 @@ use std::os::raw::c_char;
 use actix_web::{get, put, web, App, HttpServer, Responder};
 use actix_cors::Cors;
 use serde::{Deserialize, Serialize};
+use std::env;
 
 #[derive(Deserialize)]
 struct EngineOption {
@@ -47,6 +48,11 @@ async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let port = env::var("PORT")
+        .unwrap_or_else(|_| "5000".to_string())
+        .parse()
+        .expect("PORT must be a number");
+
     HttpServer::new(|| {
         let cors = Cors::default()
             .allow_any_origin()
@@ -58,7 +64,7 @@ async fn main() -> std::io::Result<()> {
             .service(index)
             .service(put)
     })
-    .bind(("0.0.0.0", 5000))?
+    .bind(("0.0.0.0", port))?
     .run()
     .await
 }
