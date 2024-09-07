@@ -1,0 +1,11 @@
+[package]
+name = "dekunobou_lib"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[dependencies]
+libc = "0.2.158"
+
+[build-dependencies]
+cmake = "0.1.51"
