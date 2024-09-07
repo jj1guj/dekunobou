@@ -8,6 +8,7 @@
 - Linux  
   注意!: このプログラムは Windows での動作を確認していません.  
   もし OS が Windows でしたら WSL の使用を推奨します.
+- Rust
 
 # 必要なライブラリ
 
@@ -53,11 +54,11 @@ ulimit -s unlimited
 
 # ブラウザでの遊び方
 
-実行バイナリを`web/api`直下にコピーして以下のコマンドを実行してください.
+以下のコマンドを実行してください.
 
 ```
-pip3 install -r requirements.txt
-python3 web/api/app.py
+cd web/api
+cargo run --release
 ```
 
 ブラウザで`web/index.html`を開くと遊ぶことができます.
@@ -75,6 +76,7 @@ Othello AI using GA
 - Linux  
   Caution: This program is not confirmed on Windows.
   If your OS is Windows, please use WSL.
+- Rust
 
 # Requirements
 
@@ -120,11 +122,11 @@ ulimit -s unlimited
 
 # How to play in the browser
 
-Copy the executable binary directly under `web/api` and execute the following command.
+Execute the following command.
 
 ```
-pip3 install -r requirements.txt
-python3 web/api/app.py
+cd web/api
+cargo run --release
 ```
 
 You can play by opening `web/index.html` in your browser.
