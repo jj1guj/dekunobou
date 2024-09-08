@@ -41,6 +41,7 @@ build*/**
 
 # web resources
 **heroku_env
+**Cargo.lock
 
 .vscode/**
 web/api/target/**

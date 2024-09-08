@@ -1,4 +1,4 @@
-extern crate dekunobou_lib;
+extern crate dekunobou;
 use std::ffi::CString;
 use std::os::raw::c_char;
 use actix_web::{get, put, web, App, HttpServer, Responder};
@@ -40,7 +40,7 @@ async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
     let board_string_ptr: *const c_char = board_string.as_ptr();
     let ai_move;
     unsafe {
-        ai_move = dekunobou_lib::dekunobou(board_string_ptr, engine_option.turn != 0, engine_option.depth, engine_option.perfect_search_depth);
+        ai_move = dekunobou::dekunobou(board_string_ptr, engine_option.turn != 0, engine_option.depth, engine_option.perfect_search_depth);
     }
 
     web::Json(EngineResponse {r#move: ai_move})
