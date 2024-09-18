@@ -16,8 +16,8 @@ uint32_t dekunobou(char* board_string, bool turn, uint32_t depth,
   // コマンドライン引数をパースしてオプションをセットする
   Option option;
   option.option_web.turn = turn;
-  option.option_web.depth = 9;
-  option.option_web.perfect_search_depth = 13;
+  option.option_web.depth = depth;
+  option.option_web.perfect_search_depth = perfect_search_depth;
 
   Board board;
 
