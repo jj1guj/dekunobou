@@ -4,7 +4,7 @@
 #include "hash.hpp"
 #include "play.hpp"
 
-ZobristHash zobrist;
+// ZobristHash zobrist;
 
 // 対局用の評価関数の読み込み
 int load_eval(std::string filename, float param[param_size]) {

@@ -4,6 +4,8 @@
 #include <chrono>
 #include <unordered_map>
 
+ZobristHash zobrist;
+
 std::unordered_map<unsigned long long, float> transpose_table;
 long long nodes;
 long long nodes_total = 0;
