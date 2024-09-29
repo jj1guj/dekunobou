@@ -1,7 +1,10 @@
 #include "dekunobou.hpp"
 #include "eval_param.hpp"
 #include "ga.hpp"
+#include "hash.hpp"
 #include "play.hpp"
+
+// ZobristHash zobrist;
 
 // 対局用の評価関数の読み込み
 int load_eval(std::string filename, float param[param_size]) {

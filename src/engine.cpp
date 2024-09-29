@@ -1,7 +1,12 @@
 #include "engine.hpp"
+#include "board.hpp"
 #include "legalmovelist.hpp"
 #include <chrono>
+#include <unordered_map>
 
+ZobristHash zobrist;
+
+std::unordered_map<unsigned long long, float> transpose_table;
 long long nodes;
 long long nodes_total = 0;
 bool turn_p;
@@ -110,6 +115,12 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
     return eval(board, param);
   }
 
+  // 置換表にヒットしたら置換表に格納されているminimax値を返す
+  unsigned long long b_hash = zobrist.hash(board);
+  if (transpose_table.find(b_hash) != transpose_table.end()) {
+    return transpose_table[b_hash];
+  }
+
   LegalMoveList moves(board);
   move_ordering(moves, board, param);
 
@@ -132,11 +143,14 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
     board.push(-1); // 手番を変えて探索する
     return -nega_alpha(board, param, depth, true, -beta, -alpha);
   }
+
+  transpose_table[b_hash] = max_score;
   return max_score;
 }
 
 int go(Board board, float param[param_size], const Option &option) {
   std::chrono::system_clock::time_point start, end;
+  transpose_table.clear();
   turn_p = board.turn;
 
   float val = -inf;
@@ -217,16 +231,19 @@ int go(Board board, float param[param_size], const Option &option) {
     if (option.mode != Mode::ga) {
       // 終盤20手で完全読み
       nodes = 0;
-      if (board.point[0] + board.point[1] >= 60 - option.option_web.perfect_search_depth)
+      if (board.point[0] + board.point[1] >=
+          60 - option.option_web.perfect_search_depth)
         eval_ref = -nega_alpha(board_ref, param, 60, false, -beta, -alpha);
       else
-        eval_ref = -nega_alpha(board_ref, param, option.option_web.depth - 1, false, -beta, -alpha);
+        eval_ref = -nega_alpha(board_ref, param, option.option_web.depth - 1,
+                               false, -beta, -alpha);
       if (alpha < eval_ref)
         alpha = eval_ref;
       if (option.debug) {
         nodes_total += nodes;
-        std::cout << priority[i] + 1 << "(" << moves[priority[i]] << ")" << ": " << eval_ref << " " << nodes / 1000
-                  << "k" << std::endl;
+        std::cout << priority[i] + 1 << "(" << moves[priority[i]] << ")"
+                  << ": " << eval_ref << " " << nodes / 1000 << "k"
+                  << std::endl;
       }
     } else {
       eval_ref = -nega_alpha(board_ref, param, 0, false, -inf, inf);
@@ -238,7 +255,8 @@ int go(Board board, float param[param_size], const Option &option) {
       ++bestmoves_num;
       val = eval_ref;
     } else if (eval_ref == val &&
-               board.point[0] + board.point[1] < 60 - option.option_web.perfect_search_depth) {
+               board.point[0] + board.point[1] <
+                   60 - option.option_web.perfect_search_depth) {
       BestMoves[bestmoves_num] = moves[priority[i]];
       ++bestmoves_num;
     }
