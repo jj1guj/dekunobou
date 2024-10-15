@@ -12,6 +12,7 @@ public:
   unsigned long long board_opponent;
   unsigned long long board_black;
   unsigned long long board_white;
+  struct Hash;
 
   Board() {
     turn = false; // 後手のときtrue
@@ -45,6 +46,9 @@ public:
   // 手番交代
   void swapBoard();
 
+  bool operator==(const Board& rhs) const;
+  bool operator!=(const Board& rhs) const;
+
 private:
   unsigned long long transfer(unsigned long long id, int dir);
 
@@ -53,3 +57,14 @@ private:
 
 void disp(Board board);
 void disp_teban(Board board);
+
+inline bool Board::operator==(const Board &rhs) const {
+  const Board& lhs = *this;
+  return (this->board_black == rhs.board_black) &&
+          (this->board_white == rhs.board_white) &&
+          (this->turn == rhs.turn);
+}
+
+inline bool Board::operator!=(const Board &rhs) const {
+  return !(this->operator==(rhs));
+}

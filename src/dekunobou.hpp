@@ -20,5 +20,3 @@
 #define cur_opening 13122
 #define cur_middle 13123
 #define cur_ending 13124
-
-extern ZobristHash zobrist;
