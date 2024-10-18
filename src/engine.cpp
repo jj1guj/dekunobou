@@ -154,9 +154,6 @@ int go(Board board, float param[param_size], const Option &option) {
   transpose_table.clear();
   turn_p = board.turn;
 
-  auto it = transpose_table.begin();
-  std::cout << "transpose table address: " << &(*it) << std::endl;
-
   float val = -inf;
   LegalMoveList moves(board);
   // 1手だけのときはその手を返す
