@@ -1,15 +1,17 @@
 #pragma once
 
 #include "board.hpp"
+#include <cstddef>
 #include <cstdint>
-class ZobristHash {
-public:
-  ZobristHash() { init(); }
-  unsigned long long hash(Board &board);
-  unsigned long long hash_pass(unsigned long long &hash);
+#include <functional>
+#include <string>
 
-private:
-  void init();
-  unsigned long long hash_player[4][65536];
-  unsigned long long hash_opponent[4][65536];
+struct Board::Hash {
+  typedef std::size_t result_type;
+  std::size_t operator()(const Board& board) const;
 };
+
+inline std::size_t Board::Hash::operator()(const Board &board) const {
+  std::string bytes(reinterpret_cast<const char*>(&board), sizeof(Board));
+  return std::hash<std::string>()(bytes);
+}

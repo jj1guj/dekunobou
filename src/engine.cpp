@@ -4,9 +4,7 @@
 #include <chrono>
 #include <unordered_map>
 
-ZobristHash zobrist;
-
-std::unordered_map<unsigned long long, float> transpose_table;
+std::unordered_map<Board, float, Board::Hash> transpose_table;
 long long nodes;
 long long nodes_total = 0;
 bool turn_p;
@@ -116,9 +114,8 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
   }
 
   // 置換表にヒットしたら置換表に格納されているminimax値を返す
-  unsigned long long b_hash = zobrist.hash(board);
-  if (transpose_table.find(b_hash) != transpose_table.end()) {
-    return transpose_table[b_hash];
+  if (transpose_table.find(board) != transpose_table.end()) {
+    return transpose_table[board];
   }
 
   LegalMoveList moves(board);
@@ -144,7 +141,7 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
     return -nega_alpha(board, param, depth, true, -beta, -alpha);
   }
 
-  transpose_table[b_hash] = max_score;
+  transpose_table[board] = max_score;
   return max_score;
 }
 
