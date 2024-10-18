@@ -1,9 +1,9 @@
-FROM ubuntu:focal
+FROM rust:latest
 
 #install cpp requirements
 RUN apt-get update \
     && apt-get install -y tzdata \
-    && apt-get install -y --no-install-recommends build-essential cmake git python3-pip libgl1-mesa-dev libglib2.0-0 curl \
+    && apt-get install -y --no-install-recommends fish build-essential cmake git python3-pip libgl1-mesa-dev libglib2.0-0 curl \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -11,8 +11,8 @@ RUN apt-get update \
 RUN ln -s python3 /usr/bin/python
 COPY requirements.txt /tmp
 WORKDIR /tmp
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt \
+RUN pip install --upgrade pip --break-system-packages \
+    && pip install -r requirements.txt --break-system-packages \
     && rm -rf requirements.txt
 
 WORKDIR /root
