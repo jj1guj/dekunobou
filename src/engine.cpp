@@ -278,5 +278,7 @@ int go(Board board, float param[param_size], const Option &option) {
   }
 
   int tmp = rnd_select() % bestmoves_num;
+  transpose_table.clear();
+  transpose_table = std::unordered_map<Board, float, Board::Hash>();
   return BestMoves[tmp];
 }
