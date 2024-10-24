@@ -237,7 +237,7 @@ async function get_func(url ,board, turn, depth=7, perfect_search_depth=13) {
     }
 }
 
-const url="https://dekunobou-api.jj1guj.net/";
+const url="https://dekunobou-api.herokuapp.com/";
 
 var board=new Board();
 game_started=false;
