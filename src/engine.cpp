@@ -4,7 +4,6 @@
 #include <chrono>
 #include <unordered_map>
 
-std::unordered_map<Board, float, Board::Hash> transpose_table;
 long long nodes;
 long long nodes_total = 0;
 bool turn_p;
@@ -105,8 +104,10 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
 
 // オセロAIの教科書をもとに実装
 // https://note.com/nyanyan_cubetech/n/n210cf134b8b1?magazine_key=m54104c8d2f12
-float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
-                 float alpha, float beta) {
+float nega_alpha(Board &board,
+                 std::unordered_map<Board, float, Board::Hash> &transpose_table,
+                 float param[param_size], int depth, bool passed, float alpha,
+                 float beta) {
   // 末端ノードでは評価関数を呼ぶ
   if (depth == 0) {
     ++nodes;
@@ -125,7 +126,8 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
   for (int i = 0; i < moves.size(); ++i) {
     Board board_ref = board;
     board_ref.push(moves[i]);
-    float g = -nega_alpha(board_ref, param, depth - 1, false, -beta, -alpha);
+    float g = -nega_alpha(board_ref, transpose_table, param, depth - 1, false,
+                          -beta, -alpha);
     if (g >= beta)
       return g;
     alpha = std::max(alpha, g);
@@ -138,7 +140,8 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
       return board.point[board.turn] - board.point[!board.turn];
     }
     board.push(-1); // 手番を変えて探索する
-    return -nega_alpha(board, param, depth, true, -beta, -alpha);
+    return -nega_alpha(board, transpose_table, param, depth, true, -beta,
+                       -alpha);
   }
 
   transpose_table[board] = max_score;
@@ -146,6 +149,7 @@ float nega_alpha(Board &board, float param[param_size], int depth, bool passed,
 }
 
 int go(Board board, float param[param_size], const Option &option) {
+  std::unordered_map<Board, float, Board::Hash> transpose_table;
   std::chrono::system_clock::time_point start, end;
   transpose_table.clear();
   turn_p = board.turn;
@@ -230,10 +234,12 @@ int go(Board board, float param[param_size], const Option &option) {
       nodes = 0;
       if (board.point[0] + board.point[1] >=
           60 - option.option_web.perfect_search_depth)
-        eval_ref = -nega_alpha(board_ref, param, 60, false, -beta, -alpha);
+        eval_ref = -nega_alpha(board_ref, transpose_table, param, 60, false,
+                               -beta, -alpha);
       else
-        eval_ref = -nega_alpha(board_ref, param, option.option_web.depth - 1,
-                               false, -beta, -alpha);
+        eval_ref =
+            -nega_alpha(board_ref, transpose_table, param,
+                        option.option_web.depth - 1, false, -beta, -alpha);
       if (alpha < eval_ref)
         alpha = eval_ref;
       if (option.debug) {
@@ -243,7 +249,8 @@ int go(Board board, float param[param_size], const Option &option) {
                   << std::endl;
       }
     } else {
-      eval_ref = -nega_alpha(board_ref, param, 0, false, -inf, inf);
+      eval_ref =
+          -nega_alpha(board_ref, transpose_table, param, 0, false, -inf, inf);
     }
 
     if (eval_ref > val) {
@@ -271,5 +278,7 @@ int go(Board board, float param[param_size], const Option &option) {
   }
 
   int tmp = rnd_select() % bestmoves_num;
+  transpose_table.clear();
+  transpose_table = std::unordered_map<Board, float, Board::Hash>();
   return BestMoves[tmp];
 }
