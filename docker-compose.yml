@@ -1,5 +1,38 @@
 services:
   web:
+    restart: always
     build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/
+      # アプリケーションの設定に必要な環境変数があればここに追加
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_NAME: sohosai2024
+      TABLE_NAME: battle_results
     ports:
       - "5000:5000"
+    networks:
+      - app-network
+
+  db:
+    restart: always
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sohosai2024
+    volumes:
+      - ./web/db/data:/var/lib/postgresql/data
+      - ./web/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
