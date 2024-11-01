@@ -45,4 +45,4 @@
 **Cargo.lock
 
 .vscode/**
-web/api/target/**
+**target*

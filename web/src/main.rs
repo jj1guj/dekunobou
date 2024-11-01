@@ -1,5 +1,6 @@
 extern crate dekunobou;
 use actix_cors::Cors;
+use actix_files::Files;
 use actix_web::{get, post, put, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
 use log::{debug, error};
@@ -63,11 +64,6 @@ async fn create_db_pool(config: &Config) -> sqlx::Result<sqlx::Pool<sqlx::Postgr
         .max_connections(5)
         .connect(&database_url)
         .await
-}
-
-#[get("/")]
-async fn index() -> impl Responder {
-    "I'm dekunobou, computer othello program!\n"
 }
 
 #[derive(Serialize)]
@@ -251,10 +247,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .app_data(pool_data.clone())
             .app_data(config_data.clone())
-            .service(index)
             .service(put)
             .service(register_result_handler)
             .service(get_ai_result_handler)
+            .service(Files::new("/", "./static").index_file("index.html"))
     })
     .bind(("0.0.0.0", port))?
     .run()

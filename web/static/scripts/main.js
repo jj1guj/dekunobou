@@ -286,10 +286,8 @@ async function get_func(url, board, turn, depth = 7, perfect_search_depth = 13) 
     }
 }
 
-const url = "https://dekunobou-api.herokuapp.com/";
-
 // AIの通算成績の取得
-get_results(url + "get_ai_result");
+get_results("/get_ai_result");
 
 var board = new Board();
 game_started = false;
@@ -302,7 +300,7 @@ function game_start() {
         } else {
             // 人間が後手
             human_turn = true;
-            get_func(url + "put", board_to_str(board), Number(board.turn)).then(n => {
+            get_func("/put", board_to_str(board), Number(board.turn)).then(n => {
                 move(n);
             })
         }
@@ -364,7 +362,7 @@ function move(id) {
         }
 
         // DBに結果を送信
-        register_result(url + "post", !human_turn, board);
+        register_result("/post", !human_turn, board);
         return 0;
     }
 
@@ -385,7 +383,7 @@ function move(id) {
     //エンジンに打たせる
     if (board.turn != human_turn/*false*/) {
         //console.log("engine");
-        get_func(url + "put", board_to_str(board), Number(board.turn)).then(n => {
+        get_func("/put", board_to_str(board), Number(board.turn)).then(n => {
             move(n);
         })
     }

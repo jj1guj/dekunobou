@@ -4,5 +4,6 @@
 .vscode/
 build/
 
-web/api/target
+web/target
+web/Cargo.lock
 web/api/db
