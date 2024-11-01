@@ -2,96 +2,103 @@
 
 void print_err(const option_status_t status) {
   switch (status) {
-  case option_status_t::invalid_argument:
-    std::cerr << "Error: Invalid argument." << std::endl;
-    break;
-  case option_status_t::not_number:
-    std::cerr << "Error: Argument must be a number." << std::endl;
-    break;
-  case option_status_t::path_not_found:
-    std::cerr << "Error: Path not found." << std::endl;
-    break;
-  case option_status_t::out_of_range:
-    std::cerr << "Error: Argument is out of range." << std::endl;
-    break;
-  case option_status_t::mode_not_selected:
-    std::cerr << "Error: Argument \'--mode\' is required." << std::endl;
-    break;
-  case option_status_t::turn_not_selected:
-    std::cerr << "Error: Argument \'--turn\' is required." << std::endl;
-    break;
-  case option_status_t::board_not_set:
-    std::cerr << "Error: Argument \'--board\' is required." << std::endl;
-    break;
-  case option_status_t::path_not_selected:
-    std::cerr << "Error: Argument \'--out_path\' is required." << std::endl;
-    break;
-  case option_status_t::not_directory:
-    std::cerr << "Error: Argument must be a directory." << std::endl;
-  case option_status_t::not_file:
-    std::cerr << "Error: Argument must be a file." << std::endl;
-  default:
-    break;
+    case option_status_t::invalid_argument:
+      std::cerr << "Error: Invalid argument." << std::endl;
+      break;
+    case option_status_t::not_number:
+      std::cerr << "Error: Argument must be a number." << std::endl;
+      break;
+    case option_status_t::path_not_found:
+      std::cerr << "Error: Path not found." << std::endl;
+      break;
+    case option_status_t::out_of_range:
+      std::cerr << "Error: Argument is out of range." << std::endl;
+      break;
+    case option_status_t::mode_not_selected:
+      std::cerr << "Error: Argument \'--mode\' is required." << std::endl;
+      break;
+    case option_status_t::turn_not_selected:
+      std::cerr << "Error: Argument \'--turn\' is required." << std::endl;
+      break;
+    case option_status_t::board_not_set:
+      std::cerr << "Error: Argument \'--board\' is required." << std::endl;
+      break;
+    case option_status_t::path_not_selected:
+      std::cerr << "Error: Argument \'--out_path\' is required." << std::endl;
+      break;
+    case option_status_t::not_directory:
+      std::cerr << "Error: Argument must be a directory." << std::endl;
+    case option_status_t::not_file:
+      std::cerr << "Error: Argument must be a file." << std::endl;
+    default:
+      break;
   }
 }
 
 void print_help(const option_status_t status) {
   int max_thread = omp_get_max_threads();
   switch (status) {
-  case option_status_t::help:
-    std::cout << "Usage: dekunobou --mode <mode name> [options]" << std::endl;
-    std::cout << "  --mode <mode name>           - Mode name to run"
-              << std::endl;
-    std::cout << "         ga                    - Generate eval params by "
-                 "genetic algorithm."
-              << std::endl;
-    std::cout
-        << "         web                   - For web application's API mode."
-        << std::endl;
-    std::cout << "  --help                       - Print this help."
-              << std::endl;
-    std::cout << "  -d                           - Enable debug mode."
-              << std::endl;
-    std::cout << "  ga mode options:" << std::endl;
-    std::cout << "    --out_path <output path>   - [Required] Directory to "
-                 "which the generated parameters are output."
-              << std::endl;
-    std::cout << "    -M <integer>               - Number of intersections in "
-                 "one generation. default: 100"
-              << std::endl;
-    std::cout << "    --match_genetic <integer>  - Number of games between "
-                 "parent and child at intersection. default: 30"
-              << std::endl;
-    std::cout << "    --thresh <number>          - Threshold for the winning "
-                 "rate of replacing a parent with a child(0 ~ 1). default: 0.72"
-              << std::endl;
-    std::cout << "    --mutation_start <integer> - Time to start mutation "
-                 "(hour). default: 0"
-              << std::endl;
-    std::cout
-        << "    --mutation_prob <number>  - Probability of mutation (0 ~ 1). "
-           "default: 1e-3"
-        << std::endl;
-    std::cout << "    --time_limit <integer>     - Time to perform the genetic "
-                 "algorithm (hour). default: 36"
-              << std::endl;
-    std::cout << "    --thread <integer>         - Number of threads when "
-                 "performing genetic algorithm (1 ~ "
-              << max_thread << "). default: " << max_thread << std::endl;
-    std::cout << "  web mode options:" << std::endl;
-    std::cout << "    -b <string>                - [Required] Current board. "
-                 "Black is \'1\', white is \'2\', and none is \'0\'."
-              << std::endl;
-    std::cout << "    -t <0 or 1>                - [Required] Current turn. 0 "
-                 "is Black, 1 is White."
-              << std::endl;
-    std::cout << "    --depth <integer>          - Depth to search. default: 9"
-              << std::endl;
-    std::cout << "    --perfect_search_depth <integer>  - Depth to perfect search. default: 13" << std::endl;
-    break;
+    case option_status_t::help:
+      std::cout << "Usage: dekunobou --mode <mode name> [options]" << std::endl;
+      std::cout << "  --mode <mode name>           - Mode name to run"
+                << std::endl;
+      std::cout << "         ga                    - Generate eval params by "
+                   "genetic algorithm."
+                << std::endl;
+      std::cout
+          << "         web                   - For web application's API mode."
+          << std::endl;
+      std::cout << "  --help                       - Print this help."
+                << std::endl;
+      std::cout << "  -d                           - Enable debug mode."
+                << std::endl;
+      std::cout << "  ga mode options:" << std::endl;
+      std::cout << "    --out_path <output path>   - [Required] Directory to "
+                   "which the generated parameters are output."
+                << std::endl;
+      std::cout
+          << "    -M <integer>               - Number of intersections in "
+             "one generation. default: 100"
+          << std::endl;
+      std::cout << "    --match_genetic <integer>  - Number of games between "
+                   "parent and child at intersection. default: 30"
+                << std::endl;
+      std::cout
+          << "    --thresh <number>          - Threshold for the winning "
+             "rate of replacing a parent with a child(0 ~ 1). default: 0.72"
+          << std::endl;
+      std::cout << "    --mutation_start <integer> - Time to start mutation "
+                   "(hour). default: 0"
+                << std::endl;
+      std::cout
+          << "    --mutation_prob <number>  - Probability of mutation (0 ~ 1). "
+             "default: 1e-3"
+          << std::endl;
+      std::cout
+          << "    --time_limit <integer>     - Time to perform the genetic "
+             "algorithm (hour). default: 36"
+          << std::endl;
+      std::cout << "    --thread <integer>         - Number of threads when "
+                   "performing genetic algorithm (1 ~ "
+                << max_thread << "). default: " << max_thread << std::endl;
+      std::cout << "  web mode options:" << std::endl;
+      std::cout << "    -b <string>                - [Required] Current board. "
+                   "Black is \'1\', white is \'2\', and none is \'0\'."
+                << std::endl;
+      std::cout
+          << "    -t <0 or 1>                - [Required] Current turn. 0 "
+             "is Black, 1 is White."
+          << std::endl;
+      std::cout
+          << "    --depth <integer>          - Depth to search. default: 9"
+          << std::endl;
+      std::cout << "    --perfect_search_depth <integer>  - Depth to perfect "
+                   "search. default: 13"
+                << std::endl;
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 }
 
@@ -114,14 +121,14 @@ void print_option_web(const Option_web &option_web) {
 
 void print_option(const Option &option) {
   switch (option.mode) {
-  case Mode::ga:
-    std::cout << "Mode: ga" << std::endl;
-    print_option_ga(option.option_ga);
-    break;
-  case Mode::web:
-    std::cout << "Mode: web" << std::endl;
-    print_option_web(option.option_web);
-    break;
+    case Mode::ga:
+      std::cout << "Mode: ga" << std::endl;
+      print_option_ga(option.option_ga);
+      break;
+    case Mode::web:
+      std::cout << "Mode: web" << std::endl;
+      print_option_web(option.option_web);
+      break;
   }
   std::cout << "debug: " << option.debug << std::endl;
 }
@@ -133,16 +140,14 @@ bool is_number(const std::string &x) {
 }
 
 option_status_t to_int(const std::string &x, int &y) {
-  if (!is_number(x))
-    return option_status_t::not_number;
+  if (!is_number(x)) return option_status_t::not_number;
 
   y = std::stoi(x);
   return option_status_t::success;
 }
 
 option_status_t to_float(const std::string &x, float &y) {
-  if (!is_number(x))
-    return option_status_t::not_number;
+  if (!is_number(x)) return option_status_t::not_number;
 
   y = std::stof(x);
   return option_status_t::success;
@@ -150,13 +155,11 @@ option_status_t to_float(const std::string &x, float &y) {
 
 option_status_t to_bool(const std::string &x, bool &y) {
   int num_int;
-  if (!is_number(x))
-    return option_status_t::not_number;
+  if (!is_number(x)) return option_status_t::not_number;
 
   num_int = std::stoi(x);
 
-  if (num_int != 0 && num_int != 1)
-    return option_status_t::invalid_argument;
+  if (num_int != 0 && num_int != 1) return option_status_t::invalid_argument;
 
   y = (num_int == 1);
   return option_status_t::success;
@@ -174,103 +177,91 @@ option_status_t parse_cmd(int argc, char **argv, Option &option) {
       break;
     }
     switch (opt) {
-    case 0:
-      long_option_name = std::string(long_options[option_index].name);
+      case 0:
+        long_option_name = std::string(long_options[option_index].name);
 
-      if (optarg) {
+        if (optarg) {
+          opt_arg = std::string(optarg);
+        }
+
+        if (long_option_name == "match_genetic") {
+          option_status = to_int(opt_arg, option.option_ga.match_genetic);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "thresh") {
+          option_status = to_float(opt_arg, option.option_ga.thresh);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "mutation_start") {
+          option_status = to_int(opt_arg, option.option_ga.mutation_start);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "mutation_prob") {
+          option_status = to_float(opt_arg, option.option_ga.mutation_prob);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "time_limit") {
+          option_status = to_int(opt_arg, option.option_ga.time_limit);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "thread") {
+          option_status = to_int(opt_arg, option.option_ga.thread);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "out_path") {
+          option.option_ga.out_path = opt_arg;
+        } else if (long_option_name == "eval") {
+          option.option_web.eval = opt_arg;
+        } else if (long_option_name == "perfect_search_depth") {
+          option_status =
+              to_int(opt_arg, option.option_web.perfect_search_depth);
+          if (option_status != option_status_t::success) return option_status;
+        } else if (long_option_name == "depth") {
+          option_status = to_int(opt_arg, option.option_web.depth);
+          if (option_status != option_status_t::success) return option_status;
+        }
+        break;
+      case 'b':
+        option.option_web.board = std::string(optarg);
+        break;
+      case 'd':
+        option.debug = true;
+        break;
+      case 'e':
+        option.option_web.eval = std::string(optarg);
+        break;
+      case 'h':
+        return option_status_t::help;
+        break;
+      case 'm':
         opt_arg = std::string(optarg);
-      }
-
-      if (long_option_name == "match_genetic") {
-        option_status = to_int(opt_arg, option.option_ga.match_genetic);
-        if (option_status != option_status_t::success)
-          return option_status;
-      } else if (long_option_name == "thresh") {
-        option_status = to_float(opt_arg, option.option_ga.thresh);
-        if (option_status != option_status_t::success)
-          return option_status;
-      } else if (long_option_name == "mutation_start") {
-        option_status = to_int(opt_arg, option.option_ga.mutation_start);
-        if (option_status != option_status_t::success)
-          return option_status;
-      } else if (long_option_name == "mutation_prob") {
-        option_status = to_float(opt_arg, option.option_ga.mutation_prob);
-        if (option_status != option_status_t::success)
-          return option_status;
-      } else if (long_option_name == "time_limit") {
-        option_status = to_int(opt_arg, option.option_ga.time_limit);
-        if (option_status != option_status_t::success)
-          return option_status;
-      } else if (long_option_name == "thread") {
-        option_status = to_int(opt_arg, option.option_ga.thread);
-        if (option_status != option_status_t::success)
-          return option_status;
-      } else if (long_option_name == "out_path") {
-        option.option_ga.out_path = opt_arg;
-      } else if (long_option_name == "eval") {
-        option.option_web.eval = opt_arg;
-      } else if (long_option_name == "perfect_search_depth") {
-        option_status = to_int(opt_arg, option.option_web.perfect_search_depth);
-        if (option_status != option_status_t::success)
-          return option_status;
-      }  else if (long_option_name == "depth") {
-        option_status = to_int(opt_arg, option.option_web.depth);
-        if (option_status != option_status_t::success)
-          return option_status;
-      }
-      break;
-    case 'b':
-      option.option_web.board = std::string(optarg);
-      break;
-    case 'd':
-      option.debug = true;
-      break;
-    case 'e':
-      option.option_web.eval = std::string(optarg);
-      break;
-    case 'h':
-      return option_status_t::help;
-      break;
-    case 'm':
-      opt_arg = std::string(optarg);
-      if (opt_arg == "ga") {
-        option.mode = Mode::ga;
-      } else if (opt_arg == "web") {
-        option.mode = Mode::web;
-      } else {
+        if (opt_arg == "ga") {
+          option.mode = Mode::ga;
+        } else if (opt_arg == "web") {
+          option.mode = Mode::web;
+        } else {
+          return option_status_t::invalid_argument;
+        }
+        break;
+      case 'M':
+        opt_arg = std::string(optarg);
+        option_status = to_int(opt_arg, option.option_ga.M);
+        if (option_status != option_status_t::success) return option_status;
+        break;
+      case 't':
+        opt_arg = std::string(optarg);
+        option_status = to_bool(opt_arg, option.option_web.turn);
+        if (option_status != option_status_t::success) return option_status;
+        option.option_web.is_turn_set = true;
+        break;
+      default:
         return option_status_t::invalid_argument;
-      }
-      break;
-    case 'M':
-      opt_arg = std::string(optarg);
-      option_status = to_int(opt_arg, option.option_ga.M);
-      if (option_status != option_status_t::success)
-        return option_status;
-      break;
-    case 't':
-      opt_arg = std::string(optarg);
-      option_status = to_bool(opt_arg, option.option_web.turn);
-      if (option_status != option_status_t::success)
-        return option_status;
-      option.option_web.is_turn_set = true;
-      break;
-    default:
-      return option_status_t::invalid_argument;
-      break;
+        break;
     }
   }
   return option_status_t::success;
 }
 
 option_status_t validate_option_ga(Option_ga &option_ga) {
-  if (option_ga.M <= 0)
-    return option_status_t::out_of_range;
-  if (option_ga.match_genetic <= 0)
-    return option_status_t::out_of_range;
+  if (option_ga.M <= 0) return option_status_t::out_of_range;
+  if (option_ga.match_genetic <= 0) return option_status_t::out_of_range;
   if (option_ga.mutation_prob < 0 || option_ga.mutation_prob > 1)
     return option_status_t::out_of_range;
-  if (option_ga.mutation_start < 0)
-    return option_status_t::out_of_range;
+  if (option_ga.mutation_start < 0) return option_status_t::out_of_range;
   if (option_ga.thread <= 0) {
     return option_status_t::out_of_range;
   } else {
@@ -278,8 +269,7 @@ option_status_t validate_option_ga(Option_ga &option_ga) {
   }
   if (option_ga.thresh < 0 || option_ga.thresh > 1)
     return option_status_t::out_of_range;
-  if (option_ga.time_limit <= 0)
-    return option_status_t::out_of_range;
+  if (option_ga.time_limit <= 0) return option_status_t::out_of_range;
 
   if (option_ga.out_path.empty()) {
     return option_status_t::path_not_selected;
@@ -303,8 +293,7 @@ option_status_t validate_option_web(Option_web &option_web) {
         return option_status_t::invalid_argument;
     }
   }
-  if (!option_web.is_turn_set)
-    return option_status_t::turn_not_selected;
+  if (!option_web.is_turn_set) return option_status_t::turn_not_selected;
 
   if (!option_web.eval.empty()) {
     if (!std::filesystem::exists(option_web.eval))
@@ -313,21 +302,20 @@ option_status_t validate_option_web(Option_web &option_web) {
       return option_status_t::not_file;
   }
 
-  if (option_web.depth <= 0)
-    return option_status_t::out_of_range;
+  if (option_web.depth <= 0) return option_status_t::out_of_range;
   return option_status_t::success;
 }
 
 option_status_t validate_option(Option &option) {
   switch (option.mode) {
-  case Mode::ga:
-    return validate_option_ga(option.option_ga);
-    break;
-  case Mode::web:
-    return validate_option_web(option.option_web);
-  default:
-    return option_status_t::mode_not_selected;
-    break;
+    case Mode::ga:
+      return validate_option_ga(option.option_ga);
+      break;
+    case Mode::web:
+      return validate_option_web(option.option_web);
+    default:
+      return option_status_t::mode_not_selected;
+      break;
   }
   return option_status_t::success;
 }

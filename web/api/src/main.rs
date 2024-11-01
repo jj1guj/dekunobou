@@ -1,13 +1,13 @@
 extern crate dekunobou;
+use actix_cors::Cors;
+use actix_web::{get, post, put, web, App, HttpResponse, HttpServer, Responder};
+use dotenv::dotenv;
+use log::{debug, error};
+use serde::{Deserialize, Serialize};
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
+use std::env;
 use std::ffi::CString;
 use std::os::raw::c_char;
-use actix_web::{get, put, post, web, App, HttpResponse, HttpServer, Responder};
-use actix_cors::Cors;
-use dotenv::dotenv;
-use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
-use serde::{Deserialize, Serialize};
-use std::env;
-use log::{debug, error};
 
 #[derive(Deserialize)]
 struct EngineOption {
@@ -45,7 +45,6 @@ struct AIResult {
     win_rate: Option<String>,
 }
 
-
 fn default_depth() -> u32 {
     7
 }
@@ -82,10 +81,15 @@ async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
     let board_string_ptr: *const c_char = board_string.as_ptr();
     let ai_move;
     unsafe {
-        ai_move = dekunobou::dekunobou(board_string_ptr, engine_option.turn != 0, engine_option.depth, engine_option.perfect_search_depth);
+        ai_move = dekunobou::dekunobou(
+            board_string_ptr,
+            engine_option.turn != 0,
+            engine_option.depth,
+            engine_option.perfect_search_depth,
+        );
     }
 
-    web::Json(EngineResponse {r#move: ai_move})
+    web::Json(EngineResponse { r#move: ai_move })
 }
 
 // ゲーム結果を登録するハンドラー
@@ -168,10 +172,7 @@ async fn get_ai_result(
     let tablename = &config.tablename;
 
     // クエリの定義
-    let ai_win_query = format!(
-        "SELECT COUNT(*) FROM {} WHERE winner = ai_turn",
-        tablename
-    );
+    let ai_win_query = format!("SELECT COUNT(*) FROM {} WHERE winner = ai_turn", tablename);
     let ai_lose_query = format!(
         "SELECT COUNT(*) FROM {} WHERE winner != ai_turn AND winner != 3",
         tablename

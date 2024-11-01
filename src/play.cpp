@@ -7,10 +7,8 @@ int play_engine(float param_black[param_size], float param_white[param_size],
   int pass_count = 0;
   int move;
   while (true) {
-    if (option.debug)
-      disp(board);
-    if (pass_count > 1)
-      break;
+    if (option.debug) disp(board);
+    if (pass_count > 1) break;
     LegalMoveList moves(board);
 
     if (moves.size() == 0) {
@@ -19,8 +17,7 @@ int play_engine(float param_black[param_size], float param_white[param_size],
       continue;
     }
     pass_count = 0;
-    if (option.debug)
-      disp_teban(board);
+    if (option.debug) disp_teban(board);
     if (board.turn) {
       // 後手番
       move = go(board, param_white, option);

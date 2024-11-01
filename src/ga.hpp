@@ -1,6 +1,7 @@
-#include "play.hpp"
 #include <cmath>
 #include <set>
+
+#include "play.hpp"
 #pragma once
 #define N 1024
 /****ここから関数群****/

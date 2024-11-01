@@ -1,8 +1,10 @@
 #include "engine.hpp"
-#include "board.hpp"
-#include "legalmovelist.hpp"
+
 #include <chrono>
 #include <unordered_map>
+
+#include "board.hpp"
+#include "legalmovelist.hpp"
 
 long long nodes;
 long long nodes_total = 0;
@@ -30,8 +32,7 @@ void move_ordering(LegalMoveList &moves, Board board, float param[param_size]) {
   // 評価値の降順にソート
   std::sort(evals.begin(), evals.end(), std::greater<std::pair<float, int>>());
 
-  for (int i = 0; i < moves.size(); ++i)
-    moves[i] = evals[i].second;
+  for (int i = 0; i < moves.size(); ++i) moves[i] = evals[i].second;
 }
 
 // αβ法による先読み
@@ -58,9 +59,9 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
 
   float val;
   if (board.turn == turn_p)
-    val = -inf; // エンジン側が手番のときは評価値の最大値を求める
+    val = -inf;  // エンジン側が手番のときは評価値の最大値を求める
   else
-    val = inf; // 相手が手番のときは評価値の最小値を求める
+    val = inf;  // 相手が手番のときは評価値の最小値を求める
   // 末端ノードのとき
   Board board_ref;
   if (depth <= 0) {
@@ -70,13 +71,11 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
       board_ref.push(moves[i]);
       if (board.turn == turn_p) {
         val = std::max(val, eval(board_ref, param));
-        if (val >= beta)
-          break;
+        if (val >= beta) break;
         alpha = std::max(alpha, val);
       } else {
         val = std::min(val, eval(board_ref, param));
-        if (val <= alpha)
-          break;
+        if (val <= alpha) break;
         beta = std::min(beta, val);
       }
     }
@@ -89,13 +88,11 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
     board_ref.push(moves[i]);
     if (board.turn == turn_p) {
       val = std::max(val, alphabeta(board_ref, param, depth - 1, alpha, beta));
-      if (val >= beta)
-        break;
+      if (val >= beta) break;
       alpha = std::max(alpha, val);
     } else {
       val = std::min(val, alphabeta(board_ref, param, depth - 1, alpha, beta));
-      if (val <= alpha)
-        break;
+      if (val <= alpha) break;
       beta = std::min(beta, val);
     }
   }
@@ -128,8 +125,7 @@ float nega_alpha(Board &board,
     board_ref.push(moves[i]);
     float g = -nega_alpha(board_ref, transpose_table, param, depth - 1, false,
                           -beta, -alpha);
-    if (g >= beta)
-      return g;
+    if (g >= beta) return g;
     alpha = std::max(alpha, g);
     max_score = std::max(max_score, g);
   }
@@ -139,7 +135,7 @@ float nega_alpha(Board &board,
       ++nodes;
       return board.point[board.turn] - board.point[!board.turn];
     }
-    board.push(-1); // 手番を変えて探索する
+    board.push(-1);  // 手番を変えて探索する
     return -nega_alpha(board, transpose_table, param, depth, true, -beta,
                        -alpha);
   }
@@ -157,10 +153,9 @@ int go(Board board, float param[param_size], const Option &option) {
   float val = -inf;
   LegalMoveList moves(board);
   // 1手だけのときはその手を返す
-  if (moves.size() == 1)
-    return moves[0];
+  if (moves.size() == 1) return moves[0];
 
-  turn_p = board.turn; // エンジン側の手番を取得
+  turn_p = board.turn;  // エンジン側の手番を取得
 
   int BestMoves[64];
   int bestmoves_num;
@@ -240,13 +235,11 @@ int go(Board board, float param[param_size], const Option &option) {
         eval_ref =
             -nega_alpha(board_ref, transpose_table, param,
                         option.option_web.depth - 1, false, -beta, -alpha);
-      if (alpha < eval_ref)
-        alpha = eval_ref;
+      if (alpha < eval_ref) alpha = eval_ref;
       if (option.debug) {
         nodes_total += nodes;
-        std::cout << priority[i] + 1 << "(" << moves[priority[i]] << ")"
-                  << ": " << eval_ref << " " << nodes / 1000 << "k"
-                  << std::endl;
+        std::cout << priority[i] + 1 << "(" << moves[priority[i]] << ")" << ": "
+                  << eval_ref << " " << nodes / 1000 << "k" << std::endl;
       }
     } else {
       eval_ref =

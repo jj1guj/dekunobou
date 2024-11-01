@@ -1,7 +1,7 @@
 #include "board.hpp"
 #pragma once
 class LegalMoveList {
-public:
+ public:
   LegalMoveList() {}
   LegalMoveList(Board board) {
     unsigned long long legalBoard =
@@ -22,7 +22,7 @@ public:
   // 添字で合法手を取得
   int &operator[](int i) { return this->movelist[i]; }
 
-private:
+ private:
   int movelist[64];
   int move_num;
 };

@@ -1,4 +1,5 @@
 #include "board.hpp"
+
 #include "legalmovelist.hpp"
 
 unsigned long long makeLegalBoard(unsigned long long board_player,
@@ -208,17 +209,17 @@ unsigned long long Board::transfer(unsigned long long id, int dir) {
 
 int Board::bitcount(unsigned long long data) {
   data = (data & 0x5555555555555555) +
-         ((data & 0xaaaaaaaaaaaaaaaa) >> 1); // 2桁ごとの1の数
+         ((data & 0xaaaaaaaaaaaaaaaa) >> 1);  // 2桁ごとの1の数
   data = (data & 0x3333333333333333) +
-         ((data & 0xcccccccccccccccc) >> 2); // 4桁ごとの1の数
+         ((data & 0xcccccccccccccccc) >> 2);  // 4桁ごとの1の数
   data = (data & 0xf0f0f0f0f0f0f0f) +
-         ((data & 0xf0f0f0f0f0f0f0f0) >> 4); // 8桁ごとの1の数
+         ((data & 0xf0f0f0f0f0f0f0f0) >> 4);  // 8桁ごとの1の数
   data = (data & 0xff00ff00ff00ff) +
-         ((data & 0xff00ff00ff00ff00) >> 8); // 16桁ごとの1の数
+         ((data & 0xff00ff00ff00ff00) >> 8);  // 16桁ごとの1の数
   data = (data & 0xffff0000ffff) +
-         ((data & 0xffff0000ffff0000) >> 16); // 32桁ごとの1の数
+         ((data & 0xffff0000ffff0000) >> 16);  // 32桁ごとの1の数
   data =
-      (data & 0xffffffff) + ((data & 0xffffffff00000000) >> 32); // 64桁の1の数
+      (data & 0xffffffff) + ((data & 0xffffffff00000000) >> 32);  // 64桁の1の数
   return data;
 }
 
@@ -254,8 +255,7 @@ void disp_teban(Board board) {
       } else if (moves[cur] == 8 * i + j && cur < moves.size()) {
         ++cur;
         std::cout << cur;
-        if (cur < 10)
-          std::cout << " ";
+        if (cur < 10) std::cout << " ";
       } else {
         std::cout << ". ";
       }

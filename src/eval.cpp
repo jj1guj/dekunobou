@@ -26,8 +26,8 @@ constexpr int param_cur[3] = {cur_opening, cur_middle, cur_ending};
 constexpr int shape_ref[6][8] = {
     {0, 1, 2, 3, 4, 5, 6, 7},        {0, 8, 16, 24, 32, 40, 48, 56},
     {7, 15, 23, 31, 39, 47, 55, 63}, {56, 57, 58, 59, 60, 61, 62, 63},
-    {0, 9, 18, 27, 36, 45, 54, 63},  // 斜め
-    {7, 14, 21, 28, 35, 42, 49, 56}, // 斜め
+    {0, 9, 18, 27, 36, 45, 54, 63},   // 斜め
+    {7, 14, 21, 28, 35, 42, 49, 56},  // 斜め
 };
 
 constexpr int pow3[8] = {1, 3, 9, 27, 81, 243, 729, 2187};
@@ -52,8 +52,7 @@ float calc_shape_value(Board &board, float param[param_size], int cur_offset) {
       val += param[index + 6561];
   }
   // 後手番のときは符号を反転
-  if (board.turn)
-    val *= -1.0;
+  if (board.turn) val *= -1.0;
   return val;
 }
 
