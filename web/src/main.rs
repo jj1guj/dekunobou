@@ -5,7 +5,7 @@ use actix_web::{get, post, put, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
 use log::{debug, error};
 use serde::{Deserialize, Serialize};
-use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
+use sqlx::postgres::PgPoolOptions;
 use std::env;
 use std::ffi::CString;
 use std::os::raw::c_char;
