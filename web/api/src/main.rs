@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 use actix_web::{get, put, post, web, App, HttpResponse, HttpServer, Responder};
 use actix_cors::Cors;
 use dotenv::dotenv;
-use sqlx::postgres::PgPoolOptions;
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use serde::{Deserialize, Serialize};
 use std::env;
 use log::{debug, error};
@@ -57,7 +57,7 @@ fn default_perfect_search_depth() -> u32 {
 // データベースへの接続プールを作成
 async fn create_db_pool(config: &Config) -> sqlx::Result<sqlx::Pool<sqlx::Postgres>> {
     let database_url = format!(
-        "postgres://{}:{}@localhost/{}",
+        "postgres://{}:{}@db:5432/{}",
         config.username, config.password, config.dbname
     );
     PgPoolOptions::new()
@@ -231,6 +231,7 @@ async fn main() -> std::io::Result<()> {
     let pool = create_db_pool(&config)
         .await
         .expect("Failed to connect to the database");
+    let pool_data = web::Data::new(pool);
 
     let config_data = web::Data::new(config.clone());
 
@@ -247,7 +248,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .wrap(cors)
-            .app_data(pool.clone())
+            .app_data(pool_data.clone())
             .app_data(config_data.clone())
             .service(index)
             .service(put)
