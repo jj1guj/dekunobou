@@ -1,3 +1,7 @@
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
 //1を黒石, 2を白石として処理を行う
 class Board {
     constructor() {
@@ -246,6 +250,7 @@ async function get_results(url) {
 
 async function get_func(url, board, turn, depth = 7, perfect_search_depth = 13) {
 
+    console.log("depth:", depth, "perfect_search_depth:", perfect_search_depth);
     // リクエストボディ
     const requestBody = {
         board: board,
@@ -289,23 +294,81 @@ async function get_func(url, board, turn, depth = 7, perfect_search_depth = 13) 
 // AIの通算成績の取得
 get_results("/get_ai_result");
 
+const ai_config = [
+    {
+        min_depth: 3,
+        max_depth: 3,
+        perfect_search_depth: 5
+    },
+    {
+        min_depth: 6,
+        max_depth: 8,
+        perfect_search_depth: 13
+    },
+    {
+        min_depth: 9,
+        max_depth: 11,
+        perfect_search_depth: 15
+    }
+]
+
 var board = new Board();
 game_started = false;
 human_turn = false;
+ai_level = 0;
+
+// AIレベルの決定
+// ページが読み込まれたときに実行
+window.addEventListener('DOMContentLoaded', function() {
+    // 初期表示を設定
+    updateAiLevelDisplay();
+
+    // すべてのAIレベルのラジオボタンを取得
+    const aiLevelRadios = document.querySelectorAll('input[name="ai_level"]');
+
+    // 各ラジオボタンにイベントリスナーを追加
+    aiLevelRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            updateAiLevelDisplay();
+        });
+    });
+});
+
+function updateAiLevelDisplay() {
+    // AIレベルの決定
+    if (document.select_level.ai_level[0].checked) {
+        ai_level = 0;
+    } else if (document.select_level.ai_level[1].checked) {
+        ai_level = 1
+    } else {
+        ai_level = 2;
+    }
+    document.getElementById("ai_level").textContent = ai_level + 1
+    // TODO: 選択したAIのレベルの通算戦績が出るようにする
+}
+
 function game_start() {
     if (!game_started) {
+        document.getElementById("ai_level1").disabled = true;
+        document.getElementById("ai_level2").disabled = true;
+        document.getElementById("ai_level3").disabled = true;
+
+        // 手番の決定
         if (document.select_turn.human_turn[0].checked) {
             // 人間が先手
             human_turn = false;
         } else {
             // 人間が後手
             human_turn = true;
-            get_func("/put", board_to_str(board), Number(board.turn)).then(n => {
+            depth = getRandomInt(ai_config[ai_level].min_depth, ai_config[ai_level].max_depth);
+            perfect_search_depth = ai_config[ai_level].perfect_search_depth;
+            get_func("/put", board_to_str(board), Number(board.turn), depth, perfect_search_depth).then(n => {
                 move(n);
             })
         }
         document.getElementById("human_first").disabled = true;
         document.getElementById("human_second").disabled = true;
+
     }
     game_started = true;
 }
@@ -382,8 +445,10 @@ function move(id) {
 
     //エンジンに打たせる
     if (board.turn != human_turn/*false*/) {
-        //console.log("engine");
-        get_func("/put", board_to_str(board), Number(board.turn)).then(n => {
+        // 探索深さを決める
+        depth = getRandomInt(ai_config[ai_level].min_depth, ai_config[ai_level].max_depth);
+        perfect_search_depth = ai_config[ai_level].perfect_search_depth;
+        get_func("/put", board_to_str(board), Number(board.turn), depth, perfect_search_depth).then(n => {
             move(n);
         })
     }
