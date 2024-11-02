@@ -33,8 +33,15 @@ struct Config {
 struct GameResult {
     winner: i32,
     ai_turn: i32,
+    ai_level: i32,
     black_point: i32,
     white_point: i32,
+}
+
+// AIのレベルを取得するリクエストボディ
+#[derive(Debug, Deserialize)]
+struct AILevel {
+    ai_level: i32,
 }
 
 // AIの対局結果のレスポンスボディ
@@ -116,6 +123,7 @@ async fn register_result(
     let GameResult {
         winner,
         ai_turn,
+        ai_level,
         black_point,
         white_point,
     } = game_result;
@@ -128,13 +136,14 @@ async fn register_result(
 
     // データベースに挿入
     let query = format!(
-        "INSERT INTO {} (winner, ai_turn, black_point, white_point) VALUES ($1, $2, $3, $4)",
+        "INSERT INTO {} (winner, ai_turn, ai_level, black_point, white_point) VALUES ($1, $2, $3, $4, $5)",
         config.tablename
     );
 
     sqlx::query(&query)
         .bind(winner)
         .bind(ai_turn)
+        .bind(ai_level)
         .bind(black_point)
         .bind(white_point)
         .execute(pool)
@@ -174,6 +183,82 @@ async fn get_ai_result(
         tablename
     );
     let draw_query = format!("SELECT COUNT(*) FROM {} WHERE winner = 3", tablename);
+
+    // データの取得
+    let ai_win: i64 = sqlx::query_scalar(&ai_win_query)
+        .fetch_one(pool)
+        .await
+        .unwrap_or(0);
+
+    let ai_lose: i64 = sqlx::query_scalar(&ai_lose_query)
+        .fetch_one(pool)
+        .await
+        .unwrap_or(0);
+
+    let draw: i64 = sqlx::query_scalar(&draw_query)
+        .fetch_one(pool)
+        .await
+        .unwrap_or(0);
+
+    // 勝率の計算
+    let battle_all_count = ai_win + ai_lose + draw;
+    let win_rate = if battle_all_count > 0 {
+        let rate = (ai_win as f64 / battle_all_count as f64) * 100.0;
+        Some(format!("{:.2}", rate))
+    } else {
+        None
+    };
+
+    Ok(AIResult {
+        ai_win,
+        ai_lose,
+        draw,
+        win_rate,
+    })
+}
+
+// AIのレベルごとに対局結果を取得するハンドラー
+#[post("/get_ai_result_by_level")]
+async fn get_ai_result_by_level_handler(
+    pool: web::Data<sqlx::Pool<sqlx::Postgres>>,
+    json: web::Json<AILevel>,
+    config: web::Data<Config>,
+) -> impl Responder {
+    match get_ai_result_by_level(&pool, &json.into_inner(), &config).await {
+        Ok(result) => HttpResponse::Ok().json(result),
+        Err(e) => {
+            error!("Error fetching AI result: {}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "error",
+                "message": "Failed to fetch AI result"
+            }))
+        }
+    }
+}
+
+// AIのレベルごとに対局結果をデータベースから取得
+async fn get_ai_result_by_level(
+    pool: &sqlx::Pool<sqlx::Postgres>,
+    ai_level_struct: &AILevel,
+    config: &Config,
+) -> sqlx::Result<AIResult> {
+    let AILevel {
+        ai_level,
+    } = ai_level_struct;
+    let tablename = &config.tablename;
+
+    debug!(
+        "Received AILevel: ai_level={}",
+        ai_level
+    );
+
+    // クエリの定義
+    let ai_win_query = format!("SELECT COUNT(*) FROM {} WHERE winner = ai_turn AND ai_level = {}", tablename, ai_level);
+    let ai_lose_query = format!(
+        "SELECT COUNT(*) FROM {} WHERE winner != ai_turn AND winner != 3 AND ai_level = {}",
+        tablename, ai_level
+    );
+    let draw_query = format!("SELECT COUNT(*) FROM {} WHERE winner = 3 AND ai_level = {}", tablename, ai_level);
 
     // データの取得
     let ai_win: i64 = sqlx::query_scalar(&ai_win_query)
@@ -250,6 +335,7 @@ async fn main() -> std::io::Result<()> {
             .service(put)
             .service(register_result_handler)
             .service(get_ai_result_handler)
+            .service(get_ai_result_by_level_handler)
             .service(Files::new("/", "./static").index_file("index.html"))
     })
     .bind(("0.0.0.0", port))?

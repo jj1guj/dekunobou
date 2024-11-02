@@ -201,6 +201,7 @@ var movebyAI;
 
 // 勝敗の結果をDBに登録する
 async function register_result(url, ai_turn_bool, board) {
+    console.log("ai_level:", ai_level);
     // 先手と後手どちらの勝ちかを取得
     var winner = is_gameover(board);
 
@@ -223,6 +224,7 @@ async function register_result(url, ai_turn_bool, board) {
     const requestBody = {
         winner: winner,
         ai_turn: ai_turn,
+        ai_level: ai_level,
         black_point: black_point,
         white_point: white_point
     };
@@ -245,6 +247,27 @@ async function get_results(url) {
         document.getElementById("ai_lose").textContent = data["ai_lose"];
         document.getElementById("draw").textContent = data["draw"];
         document.getElementById("win_rate").textContent = data["win_rate"];
+    });
+}
+
+// AIの通算成績を取得&表示する
+async function get_results_by_level(url, ai_level) {
+    // リクエストボディ
+    const requestBody = {
+        ai_level: ai_level,
+    };
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    }).then(response => response.json()).then((data) => {
+        document.getElementById("ai_win_by_level").textContent = data["ai_win"];
+        document.getElementById("ai_lose_by_level").textContent = data["ai_lose"];
+        document.getElementById("draw_by_level").textContent = data["draw"];
+        document.getElementById("win_rate_by_level").textContent = data["win_rate"];
     });
 }
 
@@ -345,6 +368,7 @@ function updateAiLevelDisplay() {
     }
     document.getElementById("ai_level").textContent = ai_level + 1
     // TODO: 選択したAIのレベルの通算戦績が出るようにする
+    get_results_by_level("/get_ai_result_by_level", ai_level);
 }
 
 function game_start() {
