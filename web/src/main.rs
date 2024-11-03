@@ -81,16 +81,20 @@ struct EngineResponse {
 #[put("/put")]
 async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
     let board_string: CString = CString::new(engine_option.board.clone()).unwrap();
-    let board_string_ptr: *const c_char = board_string.as_ptr();
-    let ai_move;
-    unsafe {
-        ai_move = dekunobou::dekunobou(
-            board_string_ptr,
-            engine_option.turn != 0,
-            engine_option.depth,
-            engine_option.perfect_search_depth,
-        );
-    }
+    let turn = engine_option.turn != 0;
+    let depth = engine_option.depth;
+    let perfect_search_depth = engine_option.perfect_search_depth;
+
+    let ai_move = tokio::task::spawn_blocking(move || {
+        // Ensure `board_string` lives inside the closure to keep the pointer valid
+        let board_string_ptr: *const c_char = board_string.as_ptr();
+        unsafe {
+            // Call the unsafe function within the blocking thread
+            dekunobou::dekunobou(board_string_ptr, turn, depth, perfect_search_depth)
+        }
+    })
+    .await
+    .expect("Failed to execute blocking task");
 
     web::Json(EngineResponse { r#move: ai_move })
 }
@@ -242,23 +246,24 @@ async fn get_ai_result_by_level(
     ai_level_struct: &AILevel,
     config: &Config,
 ) -> sqlx::Result<AIResult> {
-    let AILevel {
-        ai_level,
-    } = ai_level_struct;
+    let AILevel { ai_level } = ai_level_struct;
     let tablename = &config.tablename;
 
-    debug!(
-        "Received AILevel: ai_level={}",
-        ai_level
-    );
+    debug!("Received AILevel: ai_level={}", ai_level);
 
     // クエリの定義
-    let ai_win_query = format!("SELECT COUNT(*) FROM {} WHERE winner = ai_turn AND ai_level = {}", tablename, ai_level);
+    let ai_win_query = format!(
+        "SELECT COUNT(*) FROM {} WHERE winner = ai_turn AND ai_level = {}",
+        tablename, ai_level
+    );
     let ai_lose_query = format!(
         "SELECT COUNT(*) FROM {} WHERE winner != ai_turn AND winner != 3 AND ai_level = {}",
         tablename, ai_level
     );
-    let draw_query = format!("SELECT COUNT(*) FROM {} WHERE winner = 3 AND ai_level = {}", tablename, ai_level);
+    let draw_query = format!(
+        "SELECT COUNT(*) FROM {} WHERE winner = 3 AND ai_level = {}",
+        tablename, ai_level
+    );
 
     // データの取得
     let ai_win: i64 = sqlx::query_scalar(&ai_win_query)
