@@ -369,6 +369,7 @@ function updateAiLevelDisplay() {
     document.getElementById("ai_level").textContent = ai_level + 1
     // TODO: 選択したAIのレベルの通算戦績が出るようにする
     get_results_by_level("/get_ai_result_by_level", ai_level);
+    get_results("/get_ai_result");
 }
 
 function game_start() {
