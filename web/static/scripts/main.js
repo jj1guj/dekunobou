@@ -319,9 +319,9 @@ get_results("/get_ai_result");
 
 const ai_config = [
     {
-        min_depth: 3,
-        max_depth: 3,
-        perfect_search_depth: 5
+        min_depth: 1,
+        max_depth: 2,
+        perfect_search_depth: 2
     },
     {
         min_depth: 6,
