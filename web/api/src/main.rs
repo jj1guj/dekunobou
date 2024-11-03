@@ -37,11 +37,20 @@ struct EngineResponse {
 #[put("/put")]
 async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
     let board_string: CString = CString::new(engine_option.board.clone()).unwrap();
-    let board_string_ptr: *const c_char = board_string.as_ptr();
-    let ai_move;
-    unsafe {
-        ai_move = dekunobou::dekunobou(board_string_ptr, engine_option.turn != 0, engine_option.depth, engine_option.perfect_search_depth);
-    }
+    let turn = engine_option.turn != 0;
+    let depth = engine_option.depth;
+    let perfect_search_depth = engine_option.perfect_search_depth;
+
+    let ai_move = tokio::task::spawn_blocking(move || {
+        // Ensure `board_string` lives inside the closure to keep the pointer valid
+        let board_string_ptr: *const c_char = board_string.as_ptr();
+        unsafe {
+            // Call the unsafe function within the blocking thread
+            dekunobou::dekunobou(board_string_ptr, turn, depth, perfect_search_depth)
+        }
+    })
+    .await
+    .expect("Failed to execute blocking task");
 
     web::Json(EngineResponse {r#move: ai_move})
 }

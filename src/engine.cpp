@@ -2,7 +2,9 @@
 #include "board.hpp"
 #include "legalmovelist.hpp"
 #include <chrono>
+#include <cstdlib>
 #include <unordered_map>
+#include "allocator.hpp"
 
 long long nodes;
 long long nodes_total = 0;
@@ -104,10 +106,12 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
 
 // オセロAIの教科書をもとに実装
 // https://note.com/nyanyan_cubetech/n/n210cf134b8b1?magazine_key=m54104c8d2f12
-float nega_alpha(Board &board,
-                 std::unordered_map<Board, float, Board::Hash> &transpose_table,
-                 float param[param_size], int depth, bool passed, float alpha,
-                 float beta) {
+float nega_alpha(
+    Board &board,
+    std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
+                       MallocAllocator<std::pair<const Board, float>>>
+        &transpose_table,
+    float param[param_size], int depth, bool passed, float alpha, float beta) {
   // 末端ノードでは評価関数を呼ぶ
   if (depth == 0) {
     ++nodes;
@@ -149,7 +153,10 @@ float nega_alpha(Board &board,
 }
 
 int go(Board board, float param[param_size], const Option &option) {
-  std::unordered_map<Board, float, Board::Hash> transpose_table;
+  // std::unordered_map<Board, float, Board::Hash> transpose_table;
+  std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
+                     MallocAllocator<std::pair<const Board, float>>>
+      transpose_table;
   std::chrono::system_clock::time_point start, end;
   transpose_table.clear();
   turn_p = board.turn;
@@ -279,6 +286,9 @@ int go(Board board, float param[param_size], const Option &option) {
 
   int tmp = rnd_select() % bestmoves_num;
   transpose_table.clear();
-  transpose_table = std::unordered_map<Board, float, Board::Hash>();
+  transpose_table =
+      std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
+                         MallocAllocator<std::pair<const Board, float>>>();
+  transpose_table.rehash(0);
   return BestMoves[tmp];
 }
