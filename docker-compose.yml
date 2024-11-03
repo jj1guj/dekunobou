@@ -25,15 +25,12 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: sohosai2024
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - ./web/db/data:/var/lib/postgresql/data
       - ./web/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
       - app-network
-
-volumes:
-  db-data:
 
 networks:
   app-network:
