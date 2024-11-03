@@ -3,7 +3,7 @@ use actix_cors::Cors;
 use actix_files::Files;
 use actix_web::{get, post, put, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
-use log::{debug, error};
+use log::{debug, error, info};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPoolOptions;
 use std::env;
@@ -84,6 +84,10 @@ async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
     let turn = engine_option.turn != 0;
     let depth = engine_option.depth;
     let perfect_search_depth = engine_option.perfect_search_depth;
+    info!(
+        "got put request. board: {}, turn: {}, depth: {}, perfect_search_depth: {}",
+        engine_option.board.clone(), turn, depth, perfect_search_depth
+    );
 
     let ai_move = tokio::task::spawn_blocking(move || {
         // Ensure `board_string` lives inside the closure to keep the pointer valid

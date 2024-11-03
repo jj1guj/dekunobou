@@ -11,6 +11,7 @@ services:
       DB_PASSWORD: password
       DB_NAME: sohosai2024
       TABLE_NAME: battle_results
+      RUST_LOG: info
     ports:
       - "5000:5000"
     networks:
@@ -24,7 +25,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: sohosai2024
     volumes:
-      - ./web/db/data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
       - ./web/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
