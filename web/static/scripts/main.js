@@ -329,8 +329,8 @@ const ai_config = [
         perfect_search_depth: 8
     },
     {
-        min_depth: 9,
-        max_depth: 11,
+        min_depth: 10,
+        max_depth: 12,
         perfect_search_depth: 14
     }
 ]
