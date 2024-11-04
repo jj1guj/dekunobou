@@ -446,7 +446,11 @@ function move(id) {
             document.getElementById("result").textContent = message[is_gameover(board) - 1];
         } else {
             // 人間が後手
-            document.getElementById("result").textContent = message[is_gameover(board) % 2];
+            if (is_gameover(board) == 3) {
+                document.getElementById("result").textContent = message[2];
+            } else {
+                document.getElementById("result").textContent = message[is_gameover(board) % 2];
+            }
         }
 
         // DBに結果を送信
