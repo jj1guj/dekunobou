@@ -5,5 +5,5 @@
     "engine2_eval": "", #評価関数のパス. 埋め込みの評価関数を使う際は空文字列にする
     "match_times": 100, #対戦させる回数
     "record_path": "match_record.txt", #対戦した棋譜の保存先. 1行に1対戦分の棋譜が保存される.
-    "book_path": "records.txt" #有力進行が保存されているファイルのパス
+    "book_path": "records.txt", #有力進行が保存されているファイルのパス
 }

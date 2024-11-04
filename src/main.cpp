@@ -29,8 +29,7 @@ int main(int argc, char **argv) {
   int status = set_option(argc, argv, option);
 
   // オプションのセットに失敗したらその時点で終了する
-  if (status != 0)
-    return status;
+  if (status != 0) return status;
 
   if (option.mode == Mode::ga) {
     ga(option);
@@ -39,8 +38,7 @@ int main(int argc, char **argv) {
     if (!option.option_web.eval.empty()) {
       status = load_eval(option.option_web.eval, param);
       // 読み込みに失敗したらその時点で終了する
-      if (status != 0)
-        return status;
+      if (status != 0) return status;
     }
 
     Board board;

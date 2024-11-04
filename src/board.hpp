@@ -4,9 +4,9 @@ unsigned long long makeLegalBoard(unsigned long long board_player,
                                   unsigned long long board_opponent);
 
 class Board {
-public:
-  bool turn; // 後手のときtrue
-  int ply;   // 今何手目か
+ public:
+  bool turn;  // 後手のときtrue
+  int ply;    // 今何手目か
   int point[2];
   unsigned long long board_player;
   unsigned long long board_opponent;
@@ -15,8 +15,8 @@ public:
   struct Hash;
 
   Board() {
-    turn = false; // 後手のときtrue
-    ply = 1;      // 今何手目か
+    turn = false;  // 後手のときtrue
+    ply = 1;       // 今何手目か
     point[0] = 2;
     point[1] = 2;
     board_player = 0x0000000810000000;
@@ -49,7 +49,7 @@ public:
   bool operator==(const Board& rhs) const;
   bool operator!=(const Board& rhs) const;
 
-private:
+ private:
   unsigned long long transfer(unsigned long long id, int dir);
 
   int bitcount(unsigned long long data);
@@ -58,13 +58,12 @@ private:
 void disp(Board board);
 void disp_teban(Board board);
 
-inline bool Board::operator==(const Board &rhs) const {
+inline bool Board::operator==(const Board& rhs) const {
   const Board& lhs = *this;
   return (this->board_black == rhs.board_black) &&
-          (this->board_white == rhs.board_white) &&
-          (this->turn == rhs.turn);
+         (this->board_white == rhs.board_white) && (this->turn == rhs.turn);
 }
 
-inline bool Board::operator!=(const Board &rhs) const {
+inline bool Board::operator!=(const Board& rhs) const {
   return !(this->operator==(rhs));
 }

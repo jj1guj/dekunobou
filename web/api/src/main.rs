@@ -1,10 +1,10 @@
 extern crate dekunobou;
-use std::ffi::CString;
-use std::os::raw::c_char;
-use actix_web::{get, put, web, App, HttpServer, Responder};
 use actix_cors::Cors;
+use actix_web::{get, put, web, App, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
 use std::env;
+use std::ffi::CString;
+use std::os::raw::c_char;
 
 #[derive(Deserialize)]
 struct EngineOption {
@@ -52,7 +52,7 @@ async fn put(engine_option: web::Json<EngineOption>) -> impl Responder {
     .await
     .expect("Failed to execute blocking task");
 
-    web::Json(EngineResponse {r#move: ai_move})
+    web::Json(EngineResponse { r#move: ai_move })
 }
 
 #[actix_web::main]
@@ -68,10 +68,7 @@ async fn main() -> std::io::Result<()> {
             .allow_any_method()
             .allow_any_header();
 
-        App::new()
-            .wrap(cors)
-            .service(index)
-            .service(put)
+        App::new().wrap(cors).service(index).service(put)
     })
     .bind(("0.0.0.0", port))?
     .run()

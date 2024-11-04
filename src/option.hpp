@@ -1,8 +1,9 @@
+#include <getopt.h>
+#include <omp.h>
+
 #include <algorithm>
 #include <filesystem>
-#include <getopt.h>
 #include <iostream>
-#include <omp.h>
 #include <regex>
 #include <string>
 #pragma once
@@ -22,7 +23,7 @@ static struct option long_options[] = {
     {"turn", required_argument, NULL, 't'},
     {"depth", required_argument, NULL, 0},
     {"eval", required_argument, NULL, 'e'},
-    {.name="perfect_search_depth", required_argument, NULL, 0},
+    {.name = "perfect_search_depth", required_argument, NULL, 0},
     {"debug", no_argument, NULL, 'd'},
     {"help", no_argument, NULL, 'h'}};
 
