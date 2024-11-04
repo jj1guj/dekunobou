@@ -22,3 +22,9 @@
 #define cur_opening 13122
 #define cur_middle 13123
 #define cur_ending 13124
+
+// 探索窓の幅
+// 理論上の評価値の最大値が8で、これを64(獲得できる最大枚数)で
+// 割ると0.125になるのでこの値を設定している
+#define search_window 0.125
+#define search_window_perfect 1

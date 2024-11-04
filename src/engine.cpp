@@ -8,7 +8,9 @@
 #include "allocator.hpp"
 #include "board.hpp"
 #include "legalmovelist.hpp"
+#include "option.hpp"
 
+float window;
 long long nodes;
 long long nodes_total = 0;
 bool turn_p;
@@ -173,6 +175,104 @@ float nega_alpha(
   return max_score;
 }
 
+float nega_scout(
+    Board &board,
+    std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
+                       MallocAllocator<std::pair<const Board, float>>>
+        &transpose_table_lower,
+    std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
+                       MallocAllocator<std::pair<const Board, float>>>
+        &transpose_table_upper,
+    float param[param_size], int depth, bool passed, float alpha, float beta) {
+  // 末端ノードでは評価関数を呼ぶ
+  if (depth == 0) {
+    ++nodes;
+    return eval(board, param);
+  }
+
+  // 置換表にヒットしたら置換表に格納されているminimax値を返す
+  float l = -inf, u = inf;
+  if (transpose_table_lower.find(board) != transpose_table_lower.end()) {
+    l = transpose_table_lower[board];
+  }
+  if (transpose_table_upper.find(board) != transpose_table_upper.end()) {
+    u = transpose_table_upper[board];
+  }
+
+  // minimax値が求まっていたらその値を返す
+  if (u == l) return u;
+
+  alpha = std::max(alpha, l);
+  beta = std::min(beta, u);
+
+  LegalMoveList moves(board);
+  move_ordering(moves, board, param);
+
+  float max_score = -inf;
+
+  // 最善手候補を通常窓で探索
+  Board board_ref = board;
+  board_ref.push(moves[0]);
+  float g = -nega_scout(board_ref, transpose_table_lower, transpose_table_upper,
+                        param, depth - 1, false, -beta, -alpha);
+  if (g >= beta) {
+    if (g > l) {
+      transpose_table_lower[board] = g;
+    }
+    return g;
+  }
+  alpha = std::max(alpha, g);
+  max_score = std::max(max_score, g);
+
+  // 残りの手をnull window searchで探索
+  for (int i = 1; i < moves.size(); ++i) {
+    Board board_ref = board;
+    board_ref.push(moves[i]);
+    float g =
+        -nega_alpha(board_ref, transpose_table_lower, transpose_table_upper,
+                    param, depth - 1, false, -alpha - window, -alpha);
+    if (g >= beta) {
+      if (g > l) {
+        transpose_table_lower[board] = g;
+      }
+      return g;
+    }
+
+    // 最善手候補より良い手が見つかったら再探索
+    if (g > alpha) {
+      alpha = g;
+      g = -nega_scout(board_ref, transpose_table_lower, transpose_table_upper,
+                      param, depth - 1, false, -beta, -alpha);
+      if (g >= beta) {
+        if (g > l) {
+          transpose_table_lower[board] = g;
+        }
+        return g;
+      }
+      alpha = std::max(alpha, g);
+      max_score = std::max(max_score, g);
+    }
+
+    if (max_score == -inf) {
+      if (passed) {
+        ++nodes;
+        return board.point[board.turn] - board.point[!board.turn];
+      }
+      board.push(-1);  // 手番を変えて探索する
+      return -nega_scout(board, transpose_table_lower, transpose_table_upper,
+                         param, depth, true, -beta, -alpha);
+    }
+  }
+
+  if (max_score < alpha) {
+    transpose_table_upper[board] = max_score;
+  } else {
+    transpose_table_upper[board] = max_score;
+    transpose_table_lower[board] = max_score;
+  }
+  return max_score;
+}
+
 int go(Board board, float param[param_size], const Option &option) {
   std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
                      MallocAllocator<std::pair<const Board, float>>>
@@ -250,6 +350,7 @@ int go(Board board, float param[param_size], const Option &option) {
 
   val = -inf;
   float alpha = -inf, beta = inf;
+  int search_depth;
   for (int i = 0; i < moves.size(); i++) {
     // 先読みしてみる
     // 1手読みしたいなら深さを0に指定する
@@ -260,14 +361,33 @@ int go(Board board, float param[param_size], const Option &option) {
       // 終盤20手で完全読み
       nodes = 0;
       if (board.point[0] + board.point[1] >=
-          60 - option.option_web.perfect_search_depth)
+          60 - option.option_web.perfect_search_depth) {
+        search_depth = 60;
+        window = search_window_perfect;
+      } else {
+        search_depth = option.option_web.depth - 1;
+        window = search_window;
+      }
+
+      if (i == 0) {
+        // 最善手候補を通常窓で探索
+        eval_ref =
+            -nega_scout(board_ref, transpose_table_lower, transpose_table_upper,
+                        param, search_depth, false, -beta, -alpha);
+      } else {
+        // 残りはnull window searchで探索
         eval_ref =
             -nega_alpha(board_ref, transpose_table_lower, transpose_table_upper,
-                        param, 60, false, -beta, -alpha);
-      else
-        eval_ref = -nega_alpha(
-            board_ref, transpose_table_lower, transpose_table_upper, param,
-            option.option_web.depth - 1, false, -beta, -alpha);
+                        param, search_depth, false, -alpha - window, -alpha);
+        // 最善手候補より良い手が見つかったら再探索
+        if (alpha < eval_ref) {
+          alpha = eval_ref;
+          eval_ref = -nega_scout(board_ref, transpose_table_lower,
+                                 transpose_table_upper, param, search_depth,
+                                 false, -beta, -alpha);
+        }
+      }
+
       if (alpha < eval_ref) alpha = eval_ref;
       if (option.debug) {
         nodes_total += nodes;
