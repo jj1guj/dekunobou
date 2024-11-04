@@ -1,5 +1,6 @@
 #include "engine.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdlib>
 #include <unordered_map>
@@ -107,7 +108,10 @@ float nega_alpha(
     Board &board,
     std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
                        MallocAllocator<std::pair<const Board, float>>>
-        &transpose_table,
+        &transpose_table_lower,
+    std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
+                       MallocAllocator<std::pair<const Board, float>>>
+        &transpose_table_upper,
     float param[param_size], int depth, bool passed, float alpha, float beta) {
   // 末端ノードでは評価関数を呼ぶ
   if (depth == 0) {
@@ -116,9 +120,19 @@ float nega_alpha(
   }
 
   // 置換表にヒットしたら置換表に格納されているminimax値を返す
-  if (transpose_table.find(board) != transpose_table.end()) {
-    return transpose_table[board];
+  float l = -inf, u = inf;
+  if (transpose_table_lower.find(board) != transpose_table_lower.end()) {
+    l = transpose_table_lower[board];
   }
+  if (transpose_table_upper.find(board) != transpose_table_upper.end()) {
+    u = transpose_table_upper[board];
+  }
+
+  // minimax値が求まっていたらその値を返す
+  if (u == l) return u;
+
+  alpha = std::max(alpha, l);
+  beta = std::min(beta, u);
 
   LegalMoveList moves(board);
   move_ordering(moves, board, param);
@@ -127,9 +141,15 @@ float nega_alpha(
   for (int i = 0; i < moves.size(); ++i) {
     Board board_ref = board;
     board_ref.push(moves[i]);
-    float g = -nega_alpha(board_ref, transpose_table, param, depth - 1, false,
-                          -beta, -alpha);
-    if (g >= beta) return g;
+    float g =
+        -nega_alpha(board_ref, transpose_table_lower, transpose_table_upper,
+                    param, depth - 1, false, -beta, -alpha);
+    if (g >= beta) {
+      if (g > l) {
+        transpose_table_lower[board] = g;
+      }
+      return g;
+    }
     alpha = std::max(alpha, g);
     max_score = std::max(max_score, g);
   }
@@ -140,21 +160,26 @@ float nega_alpha(
       return board.point[board.turn] - board.point[!board.turn];
     }
     board.push(-1);  // 手番を変えて探索する
-    return -nega_alpha(board, transpose_table, param, depth, true, -beta,
-                       -alpha);
+    return -nega_alpha(board, transpose_table_lower, transpose_table_upper,
+                       param, depth, true, -beta, -alpha);
   }
 
-  transpose_table[board] = max_score;
+  if (max_score < alpha) {
+    transpose_table_upper[board] = max_score;
+  } else {
+    transpose_table_upper[board] = max_score;
+    transpose_table_lower[board] = max_score;
+  }
   return max_score;
 }
 
 int go(Board board, float param[param_size], const Option &option) {
-  // std::unordered_map<Board, float, Board::Hash> transpose_table;
   std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
                      MallocAllocator<std::pair<const Board, float>>>
-      transpose_table;
+      transpose_table_lower, transpose_table_upper;
   std::chrono::system_clock::time_point start, end;
-  transpose_table.clear();
+  transpose_table_lower.clear();
+  transpose_table_upper.clear();
   turn_p = board.turn;
 
   float val = -inf;
@@ -236,12 +261,13 @@ int go(Board board, float param[param_size], const Option &option) {
       nodes = 0;
       if (board.point[0] + board.point[1] >=
           60 - option.option_web.perfect_search_depth)
-        eval_ref = -nega_alpha(board_ref, transpose_table, param, 60, false,
-                               -beta, -alpha);
-      else
         eval_ref =
-            -nega_alpha(board_ref, transpose_table, param,
-                        option.option_web.depth - 1, false, -beta, -alpha);
+            -nega_alpha(board_ref, transpose_table_lower, transpose_table_upper,
+                        param, 60, false, -beta, -alpha);
+      else
+        eval_ref = -nega_alpha(
+            board_ref, transpose_table_lower, transpose_table_upper, param,
+            option.option_web.depth - 1, false, -beta, -alpha);
       if (alpha < eval_ref) alpha = eval_ref;
       if (option.debug) {
         nodes_total += nodes;
@@ -250,8 +276,8 @@ int go(Board board, float param[param_size], const Option &option) {
                   << std::endl;
       }
     } else {
-      eval_ref =
-          -nega_alpha(board_ref, transpose_table, param, 0, false, -inf, inf);
+      eval_ref = -nega_alpha(board_ref, transpose_table_lower,
+                             transpose_table_upper, param, 0, false, -inf, inf);
     }
 
     if (eval_ref > val) {
@@ -279,10 +305,7 @@ int go(Board board, float param[param_size], const Option &option) {
   }
 
   int tmp = rnd_select() % bestmoves_num;
-  transpose_table.clear();
-  transpose_table =
-      std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
-                         MallocAllocator<std::pair<const Board, float>>>();
-  transpose_table.rehash(0);
+  transpose_table_lower.rehash(0);
+  transpose_table_upper.rehash(0);
   return BestMoves[tmp];
 }
