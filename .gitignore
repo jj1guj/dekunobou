@@ -44,7 +44,6 @@
 **heroku_env
 **Cargo.lock
 
-.cache/**
 .local/**
 .vscode/**
 **target/
