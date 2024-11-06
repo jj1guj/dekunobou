@@ -58,14 +58,15 @@ for j in tqdm.tqdm(range(len(L))):
     with open(filename, "rb") as f:
         rawdata = f.read()
 
-    data = [[struct.unpack_from("f", rawdata, 4*(param_size*i+j))[0]
+    data = [[struct.unpack_from("i", rawdata, 4*(param_size*i+j))[0]
              for j in range(param_size)] for i in range(gene_num)]
     data = np.array(data)
+    # print(data[0])
 
     # ヒートマップの描画
     plt.clf()
-    plt.imshow(data, interpolation="nearest", vmin=-1,
-               vmax=1, cmap="jet", aspect=config["aspect"])
+    plt.imshow(data, interpolation="nearest", vmin=-100,
+               vmax=100, cmap="jet", aspect=config["aspect"])
     plt.colorbar()
     plt.title("Generation: {}".format(i))
     plt.savefig(os.path.join(config["img_dir"], "out_{}.png".format(i)))
