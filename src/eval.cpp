@@ -33,8 +33,8 @@ constexpr int shape_ref[6][8] = {
 constexpr int pow3[8] = {1, 3, 9, 27, 81, 243, 729, 2187};
 
 // 角付近の形を評価する
-float calc_shape_value(Board &board, float param[param_size], int cur_offset) {
-  float val = 0;
+int calc_shape_value(Board &board, int param[param_size], int cur_offset) {
+  int val = 0;
   int index;
   int ref, ref_value;
   // 角付近の形
@@ -57,10 +57,10 @@ float calc_shape_value(Board &board, float param[param_size], int cur_offset) {
 }
 
 // 評価値の計算(手番側が有利ならプラス)
-float eval(Board &board, float param[param_size]) {
+int eval(Board &board, int param[param_size]) {
   int cur_offset = param_cur[board.ply / 20];
-  float ans =
-      6.0 * board.point[!board.turn] / (board.point[0] + board.point[1]);
+  int ans =
+      6 * board.point[!board.turn] / (board.point[0] + board.point[1]);
   // ans*=param[cur_offset+81];
   ans *= param[cur_offset];
   ans += calc_shape_value(board, param, cur_offset);

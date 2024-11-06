@@ -11,16 +11,16 @@
 long long nodes;
 long long nodes_total = 0;
 bool turn_p;
-float cell_weight[64] = {
+int cell_weight[64] = {
     30,  -12, 0,  -1, -1, 0,  -12, 30,  -12, -15, -3, -3, -3, -3, -15, -12,
     0,   -3,  0,  -1, -1, 0,  -3,  0,   -1,  -3,  -1, -1, -1, -1, -3,  -1,
     -1,  -3,  -1, -1, -1, -1, -3,  -1,  0,   -3,  0,  -1, -1, 0,  -3,  0,
     -12, -15, -3, -3, -3, -3, -15, -12, 30,  -12, 0,  -1, -1, 0,  -12, 30};
 
-void move_ordering(LegalMoveList &moves, Board board, float param[param_size]) {
+void move_ordering(LegalMoveList &moves, Board board, int param[param_size]) {
   // 各要素を{評価値, 候補手}としておき,
   // 評価値と候補手を紐づけることで二重ループを回避する
-  std::vector<std::pair<float, int>> evals(moves.size());
+  std::vector<std::pair<int, int>> evals(moves.size());
   // Board board_ref;
 
   // 1手読みの評価値を算出
@@ -32,7 +32,7 @@ void move_ordering(LegalMoveList &moves, Board board, float param[param_size]) {
   }
 
   // 評価値の降順にソート
-  std::sort(evals.begin(), evals.end(), std::greater<std::pair<float, int>>());
+  std::sort(evals.begin(), evals.end(), std::greater<std::pair<int, int>>());
 
   for (int i = 0; i < moves.size(); ++i) moves[i] = evals[i].second;
 }
@@ -40,8 +40,8 @@ void move_ordering(LegalMoveList &moves, Board board, float param[param_size]) {
 // αβ法による先読み
 // α: 評価値の最小値
 // β: 評価値の最大値
-float alphabeta(Board board, float param[param_size], int depth, float alpha,
-                float beta) {
+int alphabeta(Board board, int param[param_size], int depth, int alpha,
+                int beta) {
   // 候補手の展開
   LegalMoveList moves(board);
   move_ordering(moves, board, param);
@@ -59,7 +59,7 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
     moves = moves2;
   }
 
-  float val;
+  int val;
   if (board.turn == turn_p)
     val = -inf;  // エンジン側が手番のときは評価値の最大値を求める
   else
@@ -103,12 +103,12 @@ float alphabeta(Board board, float param[param_size], int depth, float alpha,
 
 // オセロAIの教科書をもとに実装
 // https://note.com/nyanyan_cubetech/n/n210cf134b8b1?magazine_key=m54104c8d2f12
-float nega_alpha(
+int nega_alpha(
     Board &board,
-    std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
-                       MallocAllocator<std::pair<const Board, float>>>
+    std::unordered_map<Board, int, Board::Hash, std::equal_to<Board>,
+                       MallocAllocator<std::pair<const Board, int>>>
         &transpose_table,
-    float param[param_size], int depth, bool passed, float alpha, float beta) {
+    int param[param_size], int depth, bool passed, int alpha, int beta) {
   // 末端ノードでは評価関数を呼ぶ
   if (depth == 0) {
     ++nodes;
@@ -123,11 +123,11 @@ float nega_alpha(
   LegalMoveList moves(board);
   move_ordering(moves, board, param);
 
-  float max_score = -inf;
+  int max_score = -inf;
   for (int i = 0; i < moves.size(); ++i) {
     Board board_ref = board;
     board_ref.push(moves[i]);
-    float g = -nega_alpha(board_ref, transpose_table, param, depth - 1, false,
+    int g = -nega_alpha(board_ref, transpose_table, param, depth - 1, false,
                           -beta, -alpha);
     if (g >= beta) return g;
     alpha = std::max(alpha, g);
@@ -148,16 +148,16 @@ float nega_alpha(
   return max_score;
 }
 
-int go(Board board, float param[param_size], const Option &option) {
-  // std::unordered_map<Board, float, Board::Hash> transpose_table;
-  std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
-                     MallocAllocator<std::pair<const Board, float>>>
+int go(Board board, int param[param_size], const Option &option) {
+  // std::unordered_map<Board, int, Board::Hash> transpose_table;
+  std::unordered_map<Board, int, Board::Hash, std::equal_to<Board>,
+                     MallocAllocator<std::pair<const Board, int>>>
       transpose_table;
   std::chrono::system_clock::time_point start, end;
   transpose_table.clear();
   turn_p = board.turn;
 
-  float val = -inf;
+  int val = -inf;
   LegalMoveList moves(board);
   // 1手だけのときはその手を返す
   if (moves.size() == 1) return moves[0];
@@ -169,16 +169,16 @@ int go(Board board, float param[param_size], const Option &option) {
   std::random_device rnd_select;
 
   bestmoves_num = 0;
-  float eval_ref;
+  int eval_ref;
 
   // 現在の評価値を算出
   Board board_ref;
 
   // 探索の優先順位付け
-  float evals[64];
+  int evals[64];
   int priority[64];
   bool selected[64];
-  std::vector<float> evals_sort(moves.size());
+  std::vector<int> evals_sort(moves.size());
 
   if (option.debug) {
     start = std::chrono::system_clock::now();
@@ -196,7 +196,7 @@ int go(Board board, float param[param_size], const Option &option) {
     }
 
     // 評価値の降順にソート
-    std::sort(evals_sort.begin(), evals_sort.end(), std::greater<float>());
+    std::sort(evals_sort.begin(), evals_sort.end(), std::greater<int>());
 
     for (int i = 0; i < moves.size(); ++i) {
       for (int j = 0; j < moves.size(); ++j) {
@@ -224,7 +224,7 @@ int go(Board board, float param[param_size], const Option &option) {
   }
 
   val = -inf;
-  float alpha = -inf, beta = inf;
+  int alpha = -inf, beta = inf;
   for (int i = 0; i < moves.size(); i++) {
     // 先読みしてみる
     // 1手読みしたいなら深さを0に指定する
@@ -281,8 +281,8 @@ int go(Board board, float param[param_size], const Option &option) {
   int tmp = rnd_select() % bestmoves_num;
   transpose_table.clear();
   transpose_table =
-      std::unordered_map<Board, float, Board::Hash, std::equal_to<Board>,
-                         MallocAllocator<std::pair<const Board, float>>>();
+      std::unordered_map<Board, int, Board::Hash, std::equal_to<Board>,
+                         MallocAllocator<std::pair<const Board, int>>>();
   transpose_table.rehash(0);
   return BestMoves[tmp];
 }

@@ -7,7 +7,7 @@
 // ZobristHash zobrist;
 
 // 対局用の評価関数の読み込み
-int load_eval(std::string filename, float param[param_size]) {
+int load_eval(std::string filename, int param[param_size]) {
   std::ifstream inputs(filename);
   std::string s;
   int i = 0;

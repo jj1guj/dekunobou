@@ -28,5 +28,5 @@ a*盤上にしめる自石の割合+辺の形の評価値の合計
 488: a(終盤)
 */
 
-float calc_shape_value(Board &board, float param[param_size], int cur_offset);
-float eval(Board &board, float param[param_size]);
+int calc_shape_value(Board &board, int param[param_size], int cur_offset);
+int eval(Board &board, int param[param_size]);

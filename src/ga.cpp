@@ -1,10 +1,10 @@
 #include "ga.hpp"
 
 // 評価関数のパラメータ関連
-float params[N][param_size];
+int params[N][param_size];
 int memsize = sizeof(params[0]);
-float param_black[param_size];
-float param_white[param_size];
+int param_black[param_size];
+int param_white[param_size];
 
 // 交叉関連
 int M = 100;             // 1世代での交叉回数
@@ -62,17 +62,17 @@ void init_R3() {
 }
 
 std::random_device rnd;
-void init_param(float params[param_size]) {
+void init_param(int params[param_size]) {
   for (int i = 0; i < param_size; ++i) {
     if (i <= R3[i]) {
-      params[i] = 2.0 * (float)rnd() / 0xffffffff - 1.0;
+      params[i] = (int)(200.0 * (float)rnd() / 0xffffffff - 100.0);
       params[R3[i]] = params[i];
     }
   }
 }
 
 // 遺伝的アルゴリズムで使用したパラメータすべてをバイナリファイルから読み込む
-int load_params(std::string filename, float params[N][param_size]) {
+int load_params(std::string filename, int params[N][param_size]) {
   std::ifstream inputs(filename, std::ios::in | std::ios::binary);
   std::string s;
   int i = 0, j;
@@ -82,9 +82,9 @@ int load_params(std::string filename, float params[N][param_size]) {
   }
 
   int cur = 0;
-  float p;
+  int p;
   while (!inputs.eof()) {
-    inputs.read((char *)&p, sizeof(float));
+    inputs.read((char *)&p, sizeof(int));
     params[cur / param_size][cur % param_size] = p;
     ++cur;
     if (cur == N * param_size) break;
@@ -98,20 +98,20 @@ void out_params(std::string path) {
                        std::ios::out | std::ios::binary | std::ios::trunc);
   for (int i = 0; i < N; ++i) {
     for (int j = 0; j < param_size; ++j) {
-      output.write((char *)&params[i][j], sizeof(float));
+      output.write((char *)&params[i][j], sizeof(int));
     }
   }
   output.close();
 }
 
 // 交叉
-void intersection(float p1[param_size], float p2[param_size], int cur1,
+void intersection(int p1[param_size], int p2[param_size], int cur1,
                   int cur2, const Option &option) {
   int win_val[2];
   // p1: 親1, p2: 親2
   // c1: 子1(p1ベースでp2と交叉した後のもの)
   // c2: 子2(p2ベースでp1と交叉した後のもの)
-  float c, c1[param_size], c2[param_size];
+  int c, c1[param_size], c2[param_size];
   std::set<int> intersected, changed_c1, changed_c2;
 
   // M回交叉する
@@ -154,8 +154,9 @@ void intersection(float p1[param_size], float p2[param_size], int cur1,
       if (alpha > 0) {
         if (i <= R3[i]) {
           if ((float)rnd() / 0xffffffff <= alpha) {
-            c = 2.0 * (float)rnd() / 0xffffffff - 1.0;
-            while (c == c1[i]) c = 2.0 * (float)rnd() / 0xffffffff - 1.0;
+            c = (int)(200.0 * (float)rnd() / 0xffffffff - 100.0);
+            while (c == c1[i])
+              c = (int)(200.0 * (float)rnd() / 0xffffffff - 100.0);
             c1[i] = c;
             c1[R3[i]] = c1[i];
             changed_c1.insert(i);
@@ -163,8 +164,9 @@ void intersection(float p1[param_size], float p2[param_size], int cur1,
           }
 
           if ((float)rnd() / 0xffffffff <= alpha) {
-            c = 2.0 * (float)rnd() / 0xffffffff - 1.0;
-            while (c == c2[i]) c = 2.0 * (float)rnd() / 0xffffffff - 1.0;
+            c = (int)(200.0 * (float)rnd() / 0xffffffff - 100.0);
+            while (c == c2[i])
+              c = (int)(200.0 * (float)rnd() / 0xffffffff - 100.0);
             c2[i] = c;
             c2[R3[i]] = c2[i];
             changed_c2.insert(i);
@@ -237,7 +239,7 @@ void ga(const Option &option) {
   if (threads_num > 0) concurrency = std::min(concurrency, threads_num);
   std::cout << "Concurrency: " << concurrency << std::endl;
 
-  float G[256][param_size];  // 交叉する遺伝子を格納.
+  int G[256][param_size];  // 交叉する遺伝子を格納.
                              // 256は多分なんとなくで決めてる気が
   int cursors[256];  // 交差する遺伝子のインデックスを格納
   for (int i = 0; i < N; ++i) cur_used[i] = false;
