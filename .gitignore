@@ -33,7 +33,7 @@
 
 .vscode/**
 .cache/**
-**build**
+**build/
 
 *.png
 *.mp4
@@ -47,4 +47,4 @@
 .cache/**
 .local/**
 .vscode/**
-**target**
+**target/
