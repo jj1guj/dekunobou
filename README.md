@@ -57,11 +57,17 @@ ulimit -s unlimited
 以下のコマンドを実行してください.
 
 ```
-cd web/api
+cd web
 cargo run --release
 ```
 
-ブラウザで`web/index.html`を開くと遊ぶことができます.
+または
+
+```
+sudo docker compose up -d
+```
+
+ブラウザで`http://localhost:5000`を開くと遊ぶことができます.
 
 # バグ報告など
 
@@ -125,11 +131,17 @@ ulimit -s unlimited
 Execute the following command.
 
 ```
-cd web/api
+cd web
 cargo run --release
 ```
 
-You can play by opening `web/index.html` in your browser.
+or
+
+```
+sudo docker compose up -d
+```
+
+You can play by opening `http://localhost:5000` in your browser.
 
 # Bug report and etc.
 
