@@ -6,7 +6,12 @@ file(GLOB src src/**)
 #for Linux
 set(CMAKE_CXX_FLAGS "-fopenmp -O2 -funroll-loops -mtune=native --std=c++17")
 
-project(dekunobou-new)
+project(dekunobou)
 
 add_executable(dekunobou ${src})
 set_property(TARGET dekunobou PROPERTY CXX_STANDARD 17)
+
+find_package(OpenMP REQUIRED)
+if(OpenMP_CXX_FOUND)
+  target_link_libraries(dekunobou PUBLIC OpenMP::OpenMP_CXX)
+endif()
