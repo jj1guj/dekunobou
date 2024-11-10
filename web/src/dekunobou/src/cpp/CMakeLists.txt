@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project("dekunobou for Rust" LANGUAGES CXX C)
-file(GLOB src ../../../../../../src/**)
+file(GLOB src ../../../../../src/**)
 list(FILTER src EXCLUDE REGEX ".*main.cpp")
 
 set(CMAKE_CXX_STANDARD 17)
