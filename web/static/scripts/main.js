@@ -237,8 +237,6 @@ async function get_func(url ,board, turn, depth=7, perfect_search_depth=13) {
     }
 }
 
-const url="https://dekunobou-api.jj1guj.net/";
-
 var board=new Board();
 game_started=false;
 human_turn=false;
@@ -250,7 +248,7 @@ function game_start(){
         }else{
             // 人間が後手
             human_turn=true;
-            get_func(url + "put", board_to_str(board), Number(board.turn)).then(n => {
+            get_func("/put", board_to_str(board), Number(board.turn)).then(n => {
                 move(n);
             })
         }
@@ -330,7 +328,7 @@ function move(id){
     //エンジンに打たせる
     if(board.turn!=human_turn/*false*/){
         //console.log("engine");
-        get_func(url + "put", board_to_str(board), Number(board.turn)).then(n => {
+        get_func("/put", board_to_str(board), Number(board.turn)).then(n => {
             move(n);
         })
     }

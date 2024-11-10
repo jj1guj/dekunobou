@@ -1,6 +1,7 @@
 extern crate dekunobou;
 use actix_cors::Cors;
-use actix_web::{get, put, web, App, HttpServer, Responder};
+use actix_files::Files;
+use actix_web::{put, web, App, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::ffi::CString;
@@ -22,11 +23,6 @@ fn default_depth() -> u32 {
 
 fn default_perfect_search_depth() -> u32 {
     13
-}
-
-#[get("/")]
-async fn index() -> impl Responder {
-    "I'm dekunobou, computer othello program!\n"
 }
 
 #[derive(Serialize)]
@@ -68,7 +64,10 @@ async fn main() -> std::io::Result<()> {
             .allow_any_method()
             .allow_any_header();
 
-        App::new().wrap(cors).service(index).service(put)
+        App::new()
+            .wrap(cors)
+            .service(put)
+            .service(Files::new("/", "./static").index_file("index.html"))
     })
     .bind(("0.0.0.0", port))?
     .run()
