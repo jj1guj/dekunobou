@@ -33,7 +33,7 @@
 
 .vscode/**
 .cache/**
-**build*/**
+**build/
 
 *.png
 *.mp4
@@ -44,5 +44,7 @@
 **heroku_env
 **Cargo.lock
 
+.cache/**
+.local/**
 .vscode/**
-web/api/target/**
+**target/

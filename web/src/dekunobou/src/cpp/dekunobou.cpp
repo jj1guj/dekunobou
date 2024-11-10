@@ -1,10 +1,10 @@
-#include "../../../../../../src/dekunobou.hpp"
+#include "../../../../../src/dekunobou.hpp"
 
 #include <cstdint>
 
-#include "../../../../../../src/board.hpp"
-#include "../../../../../../src/engine.hpp"
-#include "../../../../../../src/eval_param.hpp"
+#include "../../../../../src/board.hpp"
+#include "../../../../../src/engine.hpp"
+#include "../../../../../src/eval_param.hpp"
 
 extern "C" {
 uint32_t dekunobou(char* board_string, bool turn, uint32_t depth,

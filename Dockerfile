@@ -12,7 +12,7 @@ RUN apt-get update \
 WORKDIR /root
 COPY . /root
 
-WORKDIR /root/web/api
+WORKDIR /root/web
 
 # build API server
 RUN cargo build --release
