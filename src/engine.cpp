@@ -137,7 +137,7 @@ int nega_alpha(
   if (max_score == -inf) {
     if (passed) {
       ++nodes;
-      return board.point[board.turn] - board.point[!board.turn];
+      return 1000 * (board.point[board.turn] - board.point[!board.turn]);
     }
     board.push(-1);  // 手番を変えて探索する
     return -nega_alpha(board, transpose_table, param, depth, true, -beta,
