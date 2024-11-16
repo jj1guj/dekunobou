@@ -10,9 +10,10 @@
   もし OS が Windows でしたら WSL の使用を推奨します.
 - Rust
 
-# 必要なライブラリ
+# 必要なライブラリ等
 
 - OpenMP
+- clang
 
 # ビルド
 
@@ -87,6 +88,7 @@ Othello AI using GA
 # Requirements
 
 - OpenMP
+- clang
 
 # Build
 
