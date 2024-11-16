@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 file(GLOB src src/**)
 
 #最適化オプションの設定
 
-#for Linux
-set(CMAKE_CXX_FLAGS "-fopenmp -O2 -funroll-loops -mtune=native --std=c++17")
+#for Linux and Mac OS
+set(CMAKE_CXX_FLAGS "-O2 -funroll-loops -mtune=native --std=c++17")
 
 project(dekunobou)
 
