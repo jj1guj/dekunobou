@@ -23,7 +23,7 @@ static struct option long_options[] = {
     {"turn", required_argument, NULL, 't'},
     {"depth", required_argument, NULL, 0},
     {"eval", required_argument, NULL, 'e'},
-    {.name = "perfect_search_depth", required_argument, NULL, 0},
+    {"perfect_search_depth", required_argument, NULL, 0},
     {"debug", no_argument, NULL, 'd'},
     {"help", no_argument, NULL, 'h'}};
 

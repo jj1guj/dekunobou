@@ -129,6 +129,8 @@ void print_option(const Option &option) {
       std::cout << "Mode: web" << std::endl;
       print_option_web(option.option_web);
       break;
+    default:
+      break;
   }
   std::cout << "debug: " << option.debug << std::endl;
 }
